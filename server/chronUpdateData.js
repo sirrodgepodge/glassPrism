@@ -36,8 +36,8 @@ var query = {
     // state: "New York",
     // city: "New York, NY",
     pn: 1,
-    //l: "Buford, Wyoming",
-    q: "amazon",
+    l: "United States",
+    //q: "amazon",
 
     //stores how many pages the query has returned
     totalNumberOfPages: 0,
@@ -54,8 +54,7 @@ startDb.then(function() {
         if (query.pn <= query.totalNumberOfPages) {
             console.log('Page', query.pn.toString(), 'here we go!!!');
             pullCompanyPage(query, keepGoing);
-        } else console.log('Done at Last :)');
-        return;
+        } else return console.log('Done at Last :)');
     });
 });
 
@@ -77,7 +76,6 @@ function pullCompanyPage(queryObject, nextCompPageCb) {
         .then(function(response) {
             if (!response) return nextCompPageCb(false);
 
-            console.log(response.getBody());
             // get employers from response body
             var employers = response.getBody().response.employers;
 
