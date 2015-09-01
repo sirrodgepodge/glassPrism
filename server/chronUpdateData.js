@@ -24,20 +24,19 @@ var requestify = require('requestify'),
 //     city: "New York, NY"
 // };
 
+
+// create query object to be passed to api
 var query = {
-    "t.p": 42120,
-    "t.k": "gHxlKTuKw6S",
+    "t.p": 42564,
+    "t.k": "hGbrCTwlKrc",
     userip: "0.0.0.0",
     useragent: "",
     format: "json",
     v: 1,
     action: "employers",
-    // country: "United States",
-    // state: "New York",
-    // city: "New York, NY",
-    pn: 1,
+    pn: 500,
     l: "United States",
-    //q: "amazon",
+    //q: "macy's",
 
     //stores how many pages the query has returned
     totalNumberOfPages: 0,
@@ -48,17 +47,30 @@ var query = {
 };
 
 
+// declare regular expressions
+var selectNonNumeric = /\D+/g;
+var removeHourlyMonthly = /\s-\s(hourly|monthly|contractor|hourly contractor)/ig;
+var findNA = /n\/a/ig;
+var dashifyUrl = /['-,\s\.]+/g;
+var findAmpersand = /&/g;
+
+
+// trigger after db connection
 startDb.then(function() {
     return pullCompanyPage(query, function keepGoing() {
         query.pn++;
         if (query.pn <= query.totalNumberOfPages) {
             console.log('Page', query.pn.toString(), 'here we go!!!');
             pullCompanyPage(query, keepGoing);
-        } else return console.log('Done at Last :)');
+        } else {
+            console.log('\nDone at Last :)\n');
+            process.exit();
+        }
     });
 });
 
 
+// pull one api page
 function pullCompanyPage(queryObject, nextCompPageCb) {
     requestify.request('http://api.glassdoor.com/api/api.htm', {
             method: 'GET',
@@ -80,21 +92,22 @@ function pullCompanyPage(queryObject, nextCompPageCb) {
             var employers = response.getBody().response.employers;
 
             // keeps track of how many results have been processed relative all results
-            if(!queryObject.totalNumberOfPages) {
+            if (!queryObject.totalNumberOfPages) {
                 queryObject.totalNumberOfPages = response.getBody().response.totalNumberOfPages;
-                console.log(queryObject.totalNumberOfPages.toString(), 'pages total to go through');
+                console.log('\n' + queryObject.totalNumberOfPages, 'pages total to go through \n');
             }
             queryObject.counter = 1;
             queryObject.resultLength = employers.length;
+            console.log(queryObject.resultLength.toString(), 'employers on this page \n');
 
             // loop through each employer, add salary data, then store information
             return employers.forEach(function(val, index) {
                 var id = val.id;
-                var name = val.name.replace(/\s/g, '-');
+                var name = val.name.replace(dashifyUrl, '-').replace(findAmpersand, 'and');
 
                 // log employer ID and name
                 console.log(name, '-', val.industry, '-', val.numberOfRatings);
-
+                if (index + 1 === employers.length) console.log('');
                 // create array to store salaries data
                 val.salaries = [];
 
@@ -107,10 +120,10 @@ function pullCompanyPage(queryObject, nextCompPageCb) {
                         // continue to next page
                         pullSalaryPage(val.salaries, name, id, newPage, recurseCallBack);
                     } else {
-                        console.log(val.name, "done!!!!!");
+                        console.log('\n' + val.name, "done!!!!!");
                         return Employer.create({
                             glassDoorId: id,
-                            name: name,
+                            name: val.name,
                             website: val.website,
                             industry: val.industry,
                             numberOfRatings: val.numberOfRatings,
@@ -127,13 +140,15 @@ function pullCompanyPage(queryObject, nextCompPageCb) {
                             salaries: val.salaries
                         }, function(err, added) {
                             if (err) {
-                                if (err.message.indexOf('duplicate key error') > -1) console.log(val.name, "already exists :(");
+                                if (err.message.indexOf('duplicate key error') > -1) console.log('\n' + val.name, "already exists :(");
                                 else console.log(err);
                             } else {
-                                console.log(val.name, "added!!!!!!!!!!");
+                                console.log('\n' + val.name, "added!!!!!!!!!!");
                             }
                             queryObject.counter++;
-                            return queryObject.counter === queryObject.resultLength ? nextCompPageCb() : console.log((queryObject.resultLength - queryObject.counter).toString(), 'more left');
+                            return queryObject.counter >= queryObject.resultLength ?
+                                nextCompPageCb() :
+                                console.log('\n' + (queryObject.resultLength - queryObject.counter), 'more left \n');
                         });
                     }
                 });
@@ -145,6 +160,7 @@ function pullCompanyPage(queryObject, nextCompPageCb) {
 }
 
 
+// pull data from a salary page
 function pullSalaryPage(dataArr, name, id, page, nextSalPageCb) {
     requestify.get('http://www.glassdoor.com/Salary/' + name + '-Salaries-E' + id + page + '.htm').then(function(html) {
 
@@ -167,9 +183,6 @@ function pullSalaryPage(dataArr, name, id, page, nextSalPageCb) {
 
         //data handling
         var salaryFactor = 0;
-        var selectNonNumeric = /\D+/g;
-        var removeHourlyMonthly = /\s-\s(hourly|monthly|contractor|hourly contractor)/ig;
-        var findNA = /n\/a/i;
 
         jobSections.each(function(i, item) {
             // jQuery-ify 'item'

@@ -1,0 +1,104 @@
+{
+    jobs: [{
+        title: String,
+        sampleSize: 5,
+        highEnd: 26000,
+        lowEnd: 13000,
+        salary: 20000,
+        industry: 'Fashion',
+        company: 'Candela NYC'
+    }, {
+        title: String,
+        sampleSize: Number,
+        highEnd: Number,
+        lowEnd: Number,
+        salary: Number,
+        industry: ,
+        company:
+    }, {
+        title: String,
+        sampleSize: Number,
+        highEnd: Number,
+        lowEnd: Number,
+        salary: Number,
+        industry: ,
+        company:
+    }, {
+        title: String,
+        sampleSize: Number,
+        highEnd: Number,
+        lowEnd: Number,
+        salary: Number,
+        industry: ,
+        company:
+    }, {
+        title: String,
+        sampleSize: Number,
+        highEnd: Number,
+        lowEnd: Number,
+        salary: Number,
+        industry: ,
+        company:
+    }],
+    companies: [{
+        title: ,
+        sampleSize: ,
+        rating: ,
+        overallRating: Number,
+        cultureAndValuesRating: ,
+        seniorLeadershipRating: ,
+        compensationAndBenefitsRating: ,
+        careerOpportunitiesRating: ,
+        workLifeBalanceRating: ,
+        recommendToFriendRating:
+    }, {
+        title: ,
+        sampleSize: ,
+        rating: ,
+        overallRating: Number,
+        cultureAndValuesRating: ,
+        seniorLeadershipRating: ,
+        compensationAndBenefitsRating: ,
+        careerOpportunitiesRating: ,
+        workLifeBalanceRating: ,
+        recommendToFriendRating:
+    }, {
+        title: ,
+        sampleSize: ,
+        rating: ,
+        overallRating: Number,
+        cultureAndValuesRating: ,
+        seniorLeadershipRating: ,
+        compensationAndBenefitsRating: ,
+        careerOpportunitiesRating: ,
+        workLifeBalanceRating: ,
+        recommendToFriendRating:
+    }, {
+        title: ,
+        sampleSize: ,
+        rating: ,
+        overallRating: Number,
+        cultureAndValuesRating: ,
+        seniorLeadershipRating: ,
+        compensationAndBenefitsRating: ,
+        careerOpportunitiesRating: ,
+        workLifeBalanceRating: ,
+        recommendToFriendRating:
+    }, {
+        title: ,
+        sampleSize: ,
+        rating: ,
+        overallRating: Number,
+        cultureAndValuesRating: ,
+        seniorLeadershipRating: ,
+        compensationAndBenefitsRating: ,
+        careerOpportunitiesRating: ,
+        workLifeBalanceRating: ,
+        recommendToFriendRating:
+    }],
+    industries: [{
+        title:
+    }, {
+        title:
+    }]
+}
