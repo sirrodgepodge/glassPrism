@@ -1,0 +1,91 @@
+body {
+  margin: 0px;
+}
+
+
+
+body {
+    padding: 0;
+    margin: 0;
+    font-family: Arial;
+    font-size: 17px;
+}
+#logodiv{
+  padding-top: 6px;
+  padding-right: 10px;
+  color: grey;
+  font-family: Arial,Helvetica,freesans,sans-serif;
+  font-size: 26px;
+}
+#nav {
+    background-color: #FAFAFA;
+    position: fixed;
+}
+#nav_wrapper {
+    width: 1500px;
+    margin: 0 auto;
+    text-align: left;
+}
+#nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    min-width: 200px;
+}
+#nav ul li {
+    display: inline-block;
+    font-family: 'Quicksand', sans-serif;
+}
+#nav ul li:hover {
+    background-color: "light grey";
+}
+#nav ul li a, visited {
+    color: #CCC;
+    display: block;
+    padding: 15px;
+    text-decoration: none;
+}
+#nav ul li:hover ul {
+    display: block;
+}
+#nav ul ul {
+    display: none;
+    position: absolute;
+    background-color: #FAFAFA;
+    border-top: 0;
+    margin-left: -5px;
+}
+#nav ul ul li {
+    display: block;
+}
+#nav ul ul li a:hover {
+    color: "lightgrey";
+}
+
+
+.floatleft {
+  float: left;
+}
+
+
+text {
+  font-size: 16px;
+    font-family: 'Quicksand', sans-serif;
+}
+
+#searchdiv {
+  position: relative;
+  padding: 6px 0 0 6px;
+  color: "lightgrey";
+}
+
+#searchdiv input{
+  height: 20px;
+  border: none;
+  padding-left: 10px;
+  font-size: 0.9em;
+  color: "lightgrey";
+  background-color: transparent;
+}
+
