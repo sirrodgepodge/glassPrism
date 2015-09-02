@@ -6,45 +6,62 @@ var xColumn = "salary";
 var rColumn = "sampleSize";
 
 
-d3.json("data.json", function() {
-    console.log(arguments);
-});
+var industry = d3.select("#industry");
+var company = d3.select("#company");
+var jobTitleSvg = d3.select("#job-title");
+// .append('svg').attr('id', 'job-title-svg');
 
-
-var svg = d3.select("body").append("svg")
-    .attr("width", outerWidth)
-    .attr("height", outerHeight);
 
 // var xScale = d3.scale.linear().range([0, outerWidth]);
 // var rScale = d3.scale.linear().range([rMin, rMax]);
 
-// function render(data) {
-//     xScale.domain(d3.extent(data.jobs, function(d) {
-//         return d[xColumn];
-//     }));
-//     rScale.domain(0, d3.max(data.jobs, function(d) {
-//         return d[rColumn];
-//     }));
+// Creating Tooltip
+var tip = d3.tip()
+    .attr('class', 'd3-tip')
+    .offset([-10, 0])
+    .html(function(d) {
+        return "<span>" + d.title + "</span><br><span>$" + d.salary + "</span>";
+    });
 
-//     var circles = svg.selectAll("circle").data(data);
-//     circles.enter().append("circle").attr("r", circleRadius);
+jobTitleSvg.call(tip);
 
-//     circles
-//         .attr("cx", function(d) {
-//             return xScale(d[xColumn]);
-//         })
-//         .attr("r", function(d) {
-//             return rScale(d[rColumn]);
-//         });
+function render(data) {
+    // xScale.domain(d3.extent(data.jobs, function(d) {
+    //     return d[xColumn];
+    // }));
+    // rScale.domain(d3.extent(data.jobs, function(d) {
+    //     return d[rColumn];
+    // }));
 
-//     circles.exit().remove();
-// }
+    //debugger;
+    var circles = jobTitleSvg.selectAll("circle").data(data.jobs)
+        .enter().append("circle").attr('class', 'job-circles');
 
-// function type (d) {
-//   d.datavalue1 = +d.datavalue1;
-//   d.datavalue2 = +d.datavalue2;
-//   return d;
+    //circles.attr("r", rMax);
+
+    circles
+        .attr("class", "job-circles")
+        .attr("fill", "grey")
+        .attr("cy", function(d) {
+            return 200;
+        })
+        .attr("cx", function(d) {
+            return 200 + d[xColumn] / 200;
+        })
+        .attr("r", function(d) {
+            return d[rColumn] * 2;
+        })
+        .on('mouseover', tip.show)
+        .on('mouseout', tip.hide);
+
+    //circles.exit().remove();
+}
+
+
+
+// function renderTest(data) {
+//		console.log(data);
 // }
 
 //render
-
+d3.json("data.json", render);
