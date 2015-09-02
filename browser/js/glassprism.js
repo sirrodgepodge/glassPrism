@@ -9,11 +9,6 @@ var rColumn = "sampleSize";
 var industry = d3.select("#industry");
 var company = d3.select("#company");
 var jobTitleSvg = d3.select("#job-title");
-// .append('svg').attr('id', 'job-title-svg');
-
-
-// var xScale = d3.scale.linear().range([0, outerWidth]);
-// var rScale = d3.scale.linear().range([rMin, rMax]);
 
 // Creating Tooltip
 var tip = d3.tip()
@@ -24,6 +19,8 @@ var tip = d3.tip()
     });
 
 jobTitleSvg.call(tip);
+company.call(tip);
+industry.call(tip);
 
 function render(data) {
     // xScale.domain(d3.extent(data.jobs, function(d) {

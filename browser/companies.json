@@ -1,0 +1,14 @@
+{
+  "companies": [
+    {
+      "title": "Candela NYC",
+      "industry": "Fashion",
+      "overallRating": 5
+    },
+    {
+      "title": "Citigroup",
+      "industry": "Finance",
+      "overallRating": 2
+    }
+  ]
+}
