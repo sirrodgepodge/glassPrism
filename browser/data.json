@@ -1,0 +1,33 @@
+{
+ "jobs": [{
+ "title": "Patternmaker",
+ "sampleSize": 5,
+ "salary": 20000,
+ "industry": "Fashion",
+ "company": "Candela NYC"
+ }, {
+ "title": "Designer",
+"sampleSize": 3,
+"salary": 80000,
+ "industry": "Fashion",
+ "company": "Candela NYC" 
+ }, { 
+ "title": "Technician",
+ "sampleSize": 8,
+ "salary": 35000,
+ "industry": "Fashion",
+ "company": "Candela NYC" 
+ }, { 
+ "title": "CAD Designer",
+ "sampleSize": 2,
+ "salary": 50000,
+ "industry": "Fashion",
+ "company": "Candela NYC" 
+ }, { 
+ "title": "Sales",
+ "sampleSize": 7,
+ "salary": 60000,
+ "industry": "Fashion",
+ "company": "Candela NYC" 
+ }]
+}
