@@ -1,0 +1,160 @@
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter:alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: blue;
+    cursor: inherit;
+    display: block;
+}
+
+.form-fill,
+.show-projects {
+    width: calc(50% - 95px);
+    height: 100%;
+    
+    * {
+        font-weight: 100;
+    }
+}
+
+.show-projects {
+    float: right;
+    
+    ul {
+        margin-left: 12px;
+        width: 91.5%;
+        
+        li {
+            padding-bottom: 8px;
+            border-bottom: 1px solid $barbarian-yellow;
+            margin-bottom: 8px;
+            width: 100%;
+            
+            a {
+                transition: transform 0.2s ease-in-out, color 0.2s ease-in-out,;
+                
+                &,
+                &:focus,
+                &:visited {
+                    color: $barbarian-main-grey;
+                }
+
+                &:hover {
+                    color: $link-hover;
+                    transform: translateX(2px);
+                }
+            }
+        }
+    }
+
+    &.ng-enter {
+        opacity: 0;
+        transition: 0.3s ease-in-out;
+    }
+
+    &.ng-enter-active {
+        opacity: 1;
+    }
+}
+
+.form-fill {
+    float: left;
+    margin: 0 0 0 180px;
+    background-color: white;
+    border-left: 1px solid #d9d9de;
+    border-right: 1px solid #d9d9de;
+    
+    // border-radius: 6px;
+    padding-bottom: 40px;
+    
+    .form-group {
+        margin-bottom: 2px;
+    }
+
+    .width-limit {
+        max-width: 200px;
+    }
+
+    .width-limit-small {
+        max-width: 180px;
+    }
+
+    h3 {
+        padding-bottom: 15px;
+    }
+
+    .alert {
+        display: block;
+    }
+
+    .error-label {
+        font-size: 12px;
+        font-weight: 500;
+    }
+}
+
+// Making radio buttons nice
+input[type="radio"].toggle {
+    display: none;
+}
+
+input[type="radio"].toggle:checked + label {
+    background-image: linear-gradient(to top,#969696,#727272);
+    box-shadow: inset 0 1px 6px rgba(41, 41, 41, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+    cursor: default;
+    color: #e6e6e6;
+    border-color: transparent;
+    text-shadow: 0 1px 1px rgba(40, 40, 40, 0.75);
+}
+
+input[type="radio"].toggle + label {
+    width: 49.47%;
+    text-align: center;
+}
+
+input[type="radio"].toggle:checked + label.btn:hover {
+    background-color: inherit;
+    background-position: 0 0;
+    transition: none;
+}
+
+input[type="radio"].toggle-left + label {
+    border-right: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+input[type="radio"].toggle-right + label {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+textarea {
+    padding-top: 20px;
+    max-width: 100%; // limiting textarea
+    min-height: 100px;
+}
+
+.submit-btn {
+    width: 100%;
+    background-color: $barbarian-alt-grey;
+    border: 1px solid #d9d9de;
+    transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    
+    &:hover {
+        background-color: $barbarian-main-grey;
+        color: white;
+    }
+}

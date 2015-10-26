@@ -1,0 +1,147 @@
+// Breakpoint Vals
+$phone-max: 767px;
+$tablet-min: 768px;
+$tablet-max: 991px;
+$laptop-min: 992px;
+
+// Font weights
+$light: 100;
+$normal: 400;
+$bold: 600;
+
+// Colors
+$color-nav: #332f2b;
+$color-background: #ecf1f1;
+$color-logo: #666;
+$color-logo-hover: #e0e4e4;
+$color-text: #f8e813;
+
+* {
+    box-sizing: border-box;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    background-color: $barbarian-alt-grey;
+    color: $barbarian-main-grey;
+}
+
+h1 {
+    font-weight: $light;
+}
+
+h2 {
+    font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
+}
+
+ul {
+    list-style: none;
+}
+
+ul,
+li {
+    margin: 0;
+    padding: 0;
+}
+
+a,
+a:hover,
+a:visited,
+a:focus {
+    text-decoration: none;
+}
+
+.btn:focus {
+    outline: 0;
+}
+
+#main {
+    padding-top: 88px;
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+}
+
+.hidden {
+    display: none;
+}
+
+.pledge-form {
+    position: absolute;
+    z-index: 10;
+}
+
+//Turn off date/number form spinners
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button,
+input[type=date]::-webkit-inner-spin-button,
+input[type=date]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+// input:-webkit-autofill,
+// textarea:-webkit-autofill,
+// select:-webkit-autofill {
+//     background-color: white !important;
+//     color: initial !important;
+//     -webkit-box-shadow: 0 0 0 1000px white inset !important;
+//     box-shadow: 0 0 0 1000px white inset !important;
+// }
+
+@mixin clearfix {
+    &:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+}
+
+// Handle vendor property prefixes
+@mixin vend($prop, $val) {
+    -webkit-#{$prop}: $val;
+    -moz-#{$prop}: $val;
+    -ms-#{$prop}: $val;
+    -o-#{$prop}: $val;
+    #{$prop}: $val;
+}
+
+// Handle vendor value prefixes
+@mixin vendVal($prop, $val) {
+    #{$prop}: -webkit-#{$val};
+    #{$prop}: -moz-#{$val};
+    #{$prop}: -ms-#{$val};
+    #{$prop}: -o-#{$val};
+    #{$prop}: #{$val};
+}
+
+// Do text-shadow (not used at present)
+@mixin text-trace($color, $px) {
+    text-shadow: -$px #{-$px} 0 $color, $px #{-$px} 0 $color, -$px $px 0 $color, $px $px 0 $color;
+}
+
+// Add Square Root function
+@function sqrt($r) {
+    $x0: 1;
+    $x1: $x0;
+    
+    @for $i from 1 through 10 {
+        $x1: $x0 - ($x0 * $x0 - abs($r)) / (2 * $x0);
+        $x0: $x1;
+    }
+    @return $x1;
+}
+
+// Add function to strip the units from a variable
+@function stripUnits($number) {
+    @return $number / ($number * 0 + 1);
+}
+
+//Import all sub-scss files
+@import 'app/**/*';

@@ -1,0 +1,38 @@
+<section class="container form-fill login-form" ng-show="user.admin">
+    <!-- add admin privileges, store email and who added them -->
+    <h2>Add Admin privileges</h2>
+    <p ng-show="!error.addAdmin">&nbsp;</p>
+    <form id="auth-form" name="authForm" ng-submit="authForm.$valid && addAdmin()">
+        <span class="alert alert-danger" ng-show="error.addAdmin">
+            {{ error.addAdmin }}
+        </span>
+        <div class="form-group">
+            <input type="text" ng-model="newAdminEmail" class="form-control" id="email" placeholder="Email">
+        </div>
+        <button type="submit" class="btn btn-default login-btn">Add Admin User</button>
+    </form>
+    <!-- remove admin privileges -->
+    <h2>Remove Admin privileges</h2>
+    <p ng-show="!error.removeAdmin">&nbsp;</p>
+    <form id="auth-form" name="authForm" ng-submit="authForm.$valid && removeAdmin()">
+        <span class="alert alert-danger" ng-show="error.removeAdmin">
+            {{ error.removeAdmin }}
+        </span>
+        <div class="form-group">
+            <input type="text" ng-model="removeAdminEmail" class="form-control" id="email" placeholder="Email">
+        </div>
+        <button type="submit" class="btn btn-warning">Remove Admin</button>
+    </form>
+    <!-- delete a user -->
+    <h2>Delete Users</h2>
+    <p ng-show="!error.delete">&nbsp;</p>
+    <form id="auth-form" name="authForm" ng-submit="authForm.$valid && deleteUser()">
+        <span class="alert alert-danger" ng-show="error.deleteUser">
+            {{ error.deleteUser }}
+        </span>
+        <div class="form-group">
+            <input type="text" ng-model="userToDelete" class="form-control" id="email" placeholder="Email">
+        </div>
+        <button type="submit" class="btn btn-warning">Delete User</button>
+    </form>
+</section>

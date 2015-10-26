@@ -1,0 +1,7 @@
+<div class="comments-bubble" ng-if="commentsShowing">
+    <h5>What do you think?</h5>
+    <small ng-repeat="comment in comments">{{comment.text}}<br>
+        <div class="text-right">-{{comment.author}}</div>
+    </small>
+    <input class="floating-form" ng-blur="newComment.text.length && addComment(newComment.text)" ng-keyup="$event.keyCode == 13 ? newComment.text.length && addComment(newComment.text) : null" ng-model="newComment.text" placeholder="let me know here :)" type="text"></input>
+</div>

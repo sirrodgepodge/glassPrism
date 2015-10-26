@@ -1,0 +1,73 @@
+<section class="container form-fill">
+    <h3 class="text-center">HTML+CSS+Images Uploader</h3>
+
+<!--name the app-->
+    <div class="form-group has-feedback">
+        <div class="input-group">
+            <div class="input-group-addon">App Name</div>
+            <input class="form-control" id="your-css" name="yourCss" ng-model="appName" placeholder="name your static App!" type="text">
+        </div>
+        <label class="control-label error-label" for="your-css">&nbsp;</label>
+    </div>
+
+    <input class="form-control toggle toggle-left" id="file-auto" name="upload-style" ng-model="uploadType" type="radio" value="client">
+    <label class="toggle toggle-left" for="file-auto">Upload from Client</label>
+    <input class="form-control toggle toggle-right" id="file-manual" name="upload-style" ng-init="uploadType='server'" ng-model="uploadType" type="radio" value="server">
+    <label for="file-manual">Give Server Paths</label>
+
+<!--for client upload-->
+    <form id="client-form" name="clientForm" ng-if="uploadType==='client'" ng-submit="clientForm.$valid && zipClient(upload)" novalidate>
+
+<!--for directory upload-->
+        <div class="form-group text-center" style="padding:20px" ng-if="uploadType==='client'">
+            <span class="btn btn-primary btn-file">Select Root Directory
+                <input class="form-control" directory id="root" multiple name="root" ng-change="runFileReader(rootLoader)" ng-model="rootLoader" type="file" webkitdirectory/>
+            </span>
+        </div>
+
+        <div class="form-group text-center">
+            <span class="btn btn-primary btn-file">
+                Upload photo<input id="photo" name="photo" ng-model="photoModel" onchange="angular.element(this).scope().readFile(this)" type="file"/>
+            </span>
+            <span class="image-container"><img class="img-rounded" height="100" id="preview" ng-src="{{photoThumbnail}}" width="100"/></span>
+        </div>
+        <label class="control-label error-label">&nbsp;</label>
+
+        <button class="btn btn-default submit-btn" type="submit">Submit</button>
+    </form>
+
+<!--for server paths-->
+    <form id="server-form" name="serverForm" ng-if="uploadType==='server'" ng-submit="serverForm.$valid && zipServer(paths)" novalidate>
+        <div class="form-group has-feedback">
+            <textarea class="form-control" id="your-html" name="yourHtml" ng-model="paths.html" placeholder="your HTML" type="textarea"></textarea>
+            <label class="control-label error-label" for="your-html">&nbsp;</label>
+        </div>
+
+        <div class="form-group has-feedback">
+            <div class="input-group">
+                <div class="input-group-addon">CSS Files</div>
+                <input class="form-control" id="your-css" name="yourCss" ng-model="paths.css" placeholder="comma separate file paths" type="text">
+            </div>
+            <label class="control-label error-label" for="your-css">&nbsp;</label>
+        </div>
+
+        <div class="form-group has-feedback">
+            <div class="input-group">
+                <div class="input-group-addon">Image Files</div>
+                <input class="form-control" id="your-images" name="yourImages" ng-model="paths.images" placeholder="comma separate file paths" type="text">
+            </div>
+            <label class="control-label error-label" for="your-images">&nbsp;</label>
+        </div>
+
+        <button class="btn btn-default submit-btn" type="submit">Submit</button>
+    </form>
+</section>
+
+<section class="show-projects pull-right" ng-if="apps.length">
+    <h3>Your Apps (zips stored in s3)</h3>
+    <ul>
+        <li ng-repeat="app in apps | filter: appFilter">
+            <a class="app" ng-href="{{app.zipUrl}}">{{app.name}}</a>
+        </li>
+    </ul>
+</section>

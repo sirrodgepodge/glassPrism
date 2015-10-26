@@ -1,0 +1,53 @@
+.comments-bubble {
+    @include vend(border-radius, 10px);
+    position: absolute;
+    display: inline-block;
+    top: 88px;
+    left: 10px;
+    width: 160px;
+    font-weight: 100 !important;
+    height: auto;
+    min-height: 80px;
+    padding: 10px;
+    color: $barbarian-yellow;
+    background: $barbarian-main-grey;
+    cursor: default;
+    
+    &:after {
+        content: '';
+        position: absolute;
+        border-style: solid;
+        border-width: 0 15px 15px;
+        border-color: $barbarian-main-grey transparent;
+        display: block;
+        width: 0;
+        z-index: 1;
+        top: -15px;
+        left: 65px;
+    }
+
+    h5 {
+        font-weight: 100;
+    }
+
+    .floating-form,
+    .floating-form:focus {
+        @include vend(box-shadow, none);
+        background-color: rgba(0,0,0,0);
+        border: 0;
+        border-bottom: 1px solid $barbarian-yellow;
+        border-radius: 0;
+        width: 100%;
+        outline: none;
+        transition: 0.1s ease-in-out;
+    }
+
+    &.ng-enter {
+        opacity: 0;
+        transition: 0.3s ease-in-out;
+    }
+
+    &.ng-enter-active {
+        opacity: 1;
+    }
+}

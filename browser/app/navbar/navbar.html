@@ -1,0 +1,30 @@
+<nav class="for-adriaan-nav navbar navbar-fixed-top" xmlns="http://www.w3.org/1999/html">
+        <div class="navbar-header">
+            <button aria-controls="navbar" aria-expanded="false" class="navbar-toggle collapsed" data-target="#navbar" data-toggle="collapse" type="button">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <span ng-click="commentsShowing=!commentsShowing" class="navbar-brand">hello<b>adriaan</b></span>
+            <comments></comments>
+        </div>
+        <div class="navbar-collapse collapse" id="navbar">
+            <div class="input-group nav navbar-nav navbar-form navbar-left navbar-search-form">
+                <span class="input-group-btn navbar-search">
+                    <button class="btn btn-default navbar-search" type="submit">
+                        <i ng-class="loading? 'fa fa-spinner fa-pulse' : 'glyphicon glyphicon-search'"></i>
+                    </button>
+                </span>
+                <input class="form-control navbar-search" id="srch-term" name="srch-term" ng-change="runSearch()" ng-model="search.name" placeholder="Search Apps" type="text">
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/auth/google" class="nav-button login-button ng-cloak" ng-class="{'slidin': slidin}" ng-show="!user" ng-click="collapseSearch(); collapseNav();" target="_self">LOG IN <span class="push-out">&#10161;<i class="fa fa-google"></i></span></a></li>
+                <li><a class="nav-button" href="#" ng-click="logout(); collapseNav()" ng-show="user">LOG OUT</a></li>
+                <li ng-style="{'cursor': user && !user.admin? 'default' : ''}"><a class="nav-button" href="#" ng-style="{'pointer-events': user && !user.admin? 'none' : 'initial'}" ng-click="collapseNav()" ng-class="{'user-photo-anchor': user && user.photo}" ng-show="user" ui-sref="user-account">
+                        <i ng-class="user && user.photo ? 'nav user-photo' : 'fa fa-cog'" ng-style="{'background-image': user && user.photo? 'url(' + user.photo + ')' : ''}"></i>
+                    </a>
+                </li>
+                </ul>
+            </div>
+    </nav>
