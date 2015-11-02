@@ -1,0 +1,51 @@
+[
+    {
+      "jobTitle": "Patternmaker",
+      "sampleSize": 5,
+      "salary": 20000,
+      "industry": "Fashion",
+      "company": "Candela NYC"
+    },
+    {
+      "jobTitle": "Designer",
+      "sampleSize": 3,
+      "salary": 80000,
+      "industry": "Fashion",
+      "company": "Candela NYC"
+    },
+    {
+      "jobTitle": "Technician",
+      "sampleSize": 8,
+      "salary": 35000,
+      "industry": "Fashion",
+      "company": "Candela NYC"
+    },
+    {
+      "jobTitle": "CAD Designer",
+      "sampleSize": 2,
+      "salary": 50000,
+      "industry": "Fashion",
+      "company": "Candela NYC"
+    },
+    {
+      "jobTitle": "Sales",
+      "sampleSize": 7,
+      "salary": 60000,
+      "industry": "Fashion",
+      "company": "Candela NYC"
+    },
+    {
+      "jobTitle": "Analyst",
+      "sampleSize": 90,
+      "salary": 80000,
+      "industry": "Finance",
+      "company": "Citigroup"
+    },
+    {
+      "jobTitle": "Assistant Vice President",
+      "sampleSize": 20,
+      "salary": 95000,
+      "industry": "Finance",
+      "company": "Citigroup"
+    }
+]

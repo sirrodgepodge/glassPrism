@@ -1,8 +1,10 @@
-.for-adriaan-nav {
+.glassprism-nav {
+    position: absolute;
+    top: 0;
     border-radius: 0;
-    background-color: $barbarian-main-grey;
+    background-color: $color-nav-background;
     padding-right: 15px;
-    height: 87px;
+    height: $navbar-height;
     
     .navbar-header {
         z-index: 1;
@@ -43,12 +45,12 @@
     }
 
     .search-results {
-        background-color: $barbarian-main-grey;
-        position: fixed;
+        background-color: $color-nav;
+        position: absolute;
         width: 100%;
-        padding-top: 60px;
+        padding-top: $navbar-height;
         z-index: 10;
-        border-bottom: solid 1px $barbarian-main-grey;
+        border-bottom: solid 1px $color-nav-background;
         
         a {
             color: black;
@@ -65,7 +67,7 @@
         }
 
         &:hover {
-            background-color: $barbarian-yellow;
+            background-color: $goofy-yellow;
             text-decoration: none;
         }
     }
@@ -76,7 +78,7 @@
 
     .navbar-search-form {
         min-width: 157px;
-        width: calc(100% - 500px) !important;
+        width: calc(100% - 600px) !important;
         overflow: hidden;
         margin-bottom: 0 !important;
     }
@@ -103,7 +105,7 @@
     .navbar-search:active,
     .navbar-search:active:focus,
     .navbar-search:active:hover {
-        color: $barbarian-nav-text;
+        color: $color-nav;
         border: none;
         -webkit-box-shadow: none;
         box-shadow: none;
@@ -118,7 +120,7 @@
     }
 
     .glyphicon {
-        color: $barbarian-nav-text;
+        color: $color-nav;
     }
 
     .navbar-collapse {
@@ -139,22 +141,22 @@
     }
 
     .navbar-toggle {
-        background-color: $barbarian-main-grey;
+        background-color: $color-nav-background;
         border: none;
         padding-top: 11.5px;
         
         .icon-bar {
             transition: background-color 0.5s ease-in-out;
-            background-color: $barbarian-alt-grey;
+            background-color: $color-nav;
         }
 
         &:hover,
         &:focus,
         &:hover:focus {
-            background-color: $barbarian-main-grey;
+            background-color: $color-nav-background;
             
             .icon-bar {
-                background-color: $barbarian-yellow;
+                background-color: $goofy-yellow;
             }
         }
     }
@@ -162,11 +164,11 @@
     .navbar-brand,
     .navbar-brand:visited,
     .navbar-brand:focus {
-        color: $barbarian-nav-text;
+        color: $color-nav;
         font-size: 23px;
         font-weight: 200;
         margin-right: 22px;
-        transition: color 0.2s ease-in-out;
+        transition: color 0.25s ease-in-out;
         padding-left: 25px;
         
         b {
@@ -175,12 +177,12 @@
 
         &:hover,
         &:focus:hover {
-            color: $link-hover;
+            color: $goofy-purple;
         }
 
         &:after {
             content: "\00AE";
-            font-size: 10px;
+            font-size: 14px;
             position: absolute;
             transform: translateY(-9%);
         }
@@ -195,13 +197,14 @@
         cursor: pointer;
         
         .nav-button {
-            color: $barbarian-nav-text;
+            color: $color-nav;
             font-size: 14.5px;
             font-weight: 100;
             white-space: nowrap;
+            transition: color 0.25s ease-in-out;
             
             &.slidin {
-                transition: color 0.6s ease-in-out, transform 0.25s ease-in-out;
+                transition: color 0.25s ease-in-out, transform 0.25s ease-in-out;
                 
                 .push-out {
                     transition: transform 0.25s ease-in-out;
@@ -215,7 +218,7 @@
 
             &:hover,
             &:focus {
-                color: $barbarian-yellow;
+                color: $goofy-yellow;
                 background-color: initial;
                 border: none;
                 
@@ -242,7 +245,7 @@
                 width: 30px;
                 height: 30px;
                 border-radius: 50%;
-                border: 1px solid $barbarian-yellow;
+                border: 1px solid $goofy-yellow;
                 background: #000 no-repeat center /contain;
                 cursor: default;
             }

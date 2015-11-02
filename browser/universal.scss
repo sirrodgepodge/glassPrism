@@ -10,44 +10,40 @@ $normal: 400;
 $bold: 600;
 
 // Colors
-$color-nav: #332f2b;
-$color-background: #ecf1f1;
-$color-logo: #666;
-$color-logo-hover: #e0e4e4;
-$color-text: #f8e813;
+$color-nav: grey;
+$color-nav-background: #fafafa;
+$color-background: #fdfdfd;
+$color-text: grey;
+$goofy-yellow: #f8e813;
+$goofy-purple: rgb(110, 48, 212);
+
+// Misc
+$navbar-height: 55px;
 
 * {
     box-sizing: border-box;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 300; //light quicksand
 }
 
 html,
 body {
     width: 100%;
     height: 100%;
+    overflow: hidden;
 }
 
 body {
-    background-color: $barbarian-alt-grey;
-    color: $barbarian-main-grey;
+    background-color: $color-background;
+    color: $color-text;
 }
 
-h1 {
-    font-weight: $light;
-}
-
-h2 {
-    font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
-}
-
-ul {
-    list-style: none;
-}
-
+ol,
 ul,
 li {
     margin: 0;
     padding: 0;
+    list-style: none;
 }
 
 a,
@@ -62,10 +58,11 @@ a:focus {
 }
 
 #main {
-    padding-top: 88px;
+    margin-top: $navbar-height;
     width: 100%;
     height: 100%;
     margin: 0 auto;
+    overflow-y: scroll;
 }
 
 .hidden {

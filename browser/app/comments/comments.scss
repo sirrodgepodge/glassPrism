@@ -1,33 +1,55 @@
+$size-comments-arrow: 13px;
+$size-comments-header: 28px;
+$size-comments-input: 20px;
+$size-comments-padding: 10px;
+$size-comments-left: $size-comments-arrow;
+$size-comments-width: 155px;
+$color-comments-background: #332f2b;
+
 .comments-bubble {
     @include vend(border-radius, 10px);
     position: absolute;
     display: inline-block;
-    top: 88px;
-    left: 10px;
-    width: 160px;
-    font-weight: 100 !important;
+    top: $navbar-height + $size-comments-arrow;
     height: auto;
-    min-height: 80px;
-    padding: 10px;
-    color: $barbarian-yellow;
-    background: $barbarian-main-grey;
+    max-height: calc(100vh - #{$navbar-height + $size-comments-arrow*2});
+    left: $size-comments-left;
+    width: $size-comments-width;
+    padding: $size-comments-padding;
+    font-weight: 100 !important;
+    color: $goofy-yellow;
+    background-color: $color-comments-background;
     cursor: default;
     
     &:after {
         content: '';
         position: absolute;
         border-style: solid;
-        border-width: 0 15px 15px;
-        border-color: $barbarian-main-grey transparent;
+        border-width: 0 $size-comments-arrow $size-comments-arrow;
+        border-color: $color-comments-background transparent;
         display: block;
         width: 0;
         z-index: 1;
-        top: -15px;
-        left: 65px;
+        top: -$size-comments-arrow;
+        left: ($size-comments-width - $size-comments-left - $size-comments-arrow)/2;
     }
 
-    h5 {
-        font-weight: 100;
+    .comments-list {
+        max-height: calc(100vh - #{$navbar-height + $size-comments-arrow*2 + $size-comments-padding*2 + $size-comments-header + $size-comments-input});
+        overflow-y: scroll;
+    }
+
+    .comments-header {
+        font-size: 95%;
+        height: $size-comments-header;
+    }
+
+    .comments-ind {
+        font-size: 85%;
+    }
+
+    .comments-input {
+        height: $size-comments-input;
     }
 
     .floating-form,
@@ -35,7 +57,7 @@
         @include vend(box-shadow, none);
         background-color: rgba(0,0,0,0);
         border: 0;
-        border-bottom: 1px solid $barbarian-yellow;
+        border-bottom: 1px solid $goofy-yellow;
         border-radius: 0;
         width: 100%;
         outline: none;

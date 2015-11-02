@@ -1,6 +1,4 @@
-var globalVar;
-
-app.service('Session', function($rootScope, $interval, AUTH_EVENTS) {
+app.service('Session', function($rootScope, AUTH_EVENTS) {
 
     var self = this;
 

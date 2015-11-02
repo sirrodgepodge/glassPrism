@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('forAdrian', ['ui.router', 'ui.bootstrap', 'ngAnimate']);
+var app = angular.module('glassPrism', ['ui.router', 'ui.bootstrap', 'ngAnimate']);
 
 app.config(function($urlRouterProvider, $locationProvider) {
     // This turns off hashbang urls (/#about) and changes it to something normal (/about)

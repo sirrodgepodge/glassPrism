@@ -38,7 +38,7 @@
         
         li {
             padding-bottom: 8px;
-            border-bottom: 1px solid $barbarian-yellow;
+            border-bottom: 1px solid $goofy-yellow;
             margin-bottom: 8px;
             width: 100%;
             
@@ -48,11 +48,11 @@
                 &,
                 &:focus,
                 &:visited {
-                    color: $barbarian-main-grey;
+                    color: $color-text;
                 }
 
                 &:hover {
-                    color: $link-hover;
+                    color: $goofy-purple;
                     transform: translateX(2px);
                 }
             }
@@ -145,16 +145,4 @@ textarea {
     padding-top: 20px;
     max-width: 100%; // limiting textarea
     min-height: 100px;
-}
-
-.submit-btn {
-    width: 100%;
-    background-color: $barbarian-alt-grey;
-    border: 1px solid #d9d9de;
-    transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
-    
-    &:hover {
-        background-color: $barbarian-main-grey;
-        color: white;
-    }
 }

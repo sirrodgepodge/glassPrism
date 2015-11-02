@@ -63,7 +63,7 @@ app.use('/api', require('./internalRoutes'));
 
 // All get routes that go through the pipeline, past /api, will get the single page layout
 app.get('/*', function(req, res) {
-    res.render('layout', {title:'For Adriaan'});
+    res.render('layout', {title:'glassPrism'});
 });
 
 module.exports = app;
