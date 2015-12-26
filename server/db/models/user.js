@@ -1,6 +1,6 @@
-var crypto = require('crypto');
+// var crypto = require('crypto');
+// var ObjectId = mongoose.Schema.Types.ObjectId;
 var mongoose = require('mongoose');
-var ObjectId = mongoose.Schema.Types.ObjectId;
 
 var UserSchema = new mongoose.Schema({
     google: {
@@ -9,15 +9,7 @@ var UserSchema = new mongoose.Schema({
     email: String,
     firstName: String,
     lastName: String,
-    photo: String,
-    apps: [{
-        name: String,
-        zipUrl: String,
-        htmlStr: String,
-        cssCombined: String,
-        imageURLs: [String]
-    }]
+    photo: String
 });
-
 
 mongoose.model('User', UserSchema);

@@ -1,9 +1,9 @@
 {
-  "name": "forAdriaan",
+  "name": "glassPrism",
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon server/start.js --watch server -e js,css,html,json",
+    "start": "nodemon server --watch server -e js,css,html,json",
     "scrape": "node ./scrapingGlass",
     "postinstall": "gulp build"
   },

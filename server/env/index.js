@@ -1,8 +1,7 @@
-var path = require('path');
-var fs = require('fs');
-var aws = require('aws-sdk');
-var devConfigPath = path.join(__dirname, './development.js');
-var productionConfigPath = path.join(__dirname, './production.js');
+var path = require('path'),
+    aws = require('aws-sdk'),
+    devConfigPath = path.join(__dirname, './development.js'),
+    productionConfigPath = path.join(__dirname, './production.js');
 
 module.exports = function(app) {
     if (process.env.NODE_ENV === 'production') {
