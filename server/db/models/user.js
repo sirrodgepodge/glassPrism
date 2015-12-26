@@ -1,8 +1,8 @@
 // var crypto = require('crypto');
 // var ObjectId = mongoose.Schema.Types.ObjectId;
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-var UserSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
     google: {
         id: String
     },
