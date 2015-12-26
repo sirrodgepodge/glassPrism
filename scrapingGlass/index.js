@@ -1,9 +1,11 @@
 var requestify = require('requestify'),
+    chalk = require('chalk'),
     cheerio = require('cheerio'),
     mongoose = require('mongoose'),
-    startDb = require('./db'),
-    Employer = mongoose.model('Employer');
+    startDb = require('../server/db'),
+    Company = mongoose.model('Company');
 
+////For job search
 // var queryObj = {
 //     "t.p": 42120,
 //     "t.k": "gHxlKTuKw6S",
@@ -64,9 +66,13 @@ startDb.then(function() {
             pullCompanyPage(query, keepGoing);
         } else {
             console.log('\nDone at Last :)\n');
-            process.exit();
+            process.kill(1);
         }
     });
+})
+.catch(function(err){
+  console.error(chalk.red(err.stack));
+  process.kill(1);
 });
 
 
@@ -121,9 +127,9 @@ function pullCompanyPage(queryObject, nextCompPageCb) {
                         pullSalaryPage(val.salaries, name, id, newPage, recurseCallBack);
                     } else {
                         console.log('\n' + val.name, "done!!!!!");
-                        return Employer.create({
+                        return Company.create({
                             glassDoorId: id,
-                            name: val.name,
+                            company: val.name,
                             website: val.website,
                             industry: val.industry,
                             numberOfRatings: val.numberOfRatings,
@@ -135,8 +141,12 @@ function pullCompanyPage(queryObject, nextCompPageCb) {
                             compensationAndBenefitsRating: +val.compensationAndBenefitsRating,
                             careerOpportunitiesRating: +val.careerOpportunitiesRating,
                             workLifeBalanceRating: +val.workLifeBalanceRating,
-                            recommendToFriendRating: +val.recommendToFriendRating,
-                            ceo: val.ceo,
+                            pctRecommendToFriend: +val.recommendToFriendRating,
+                            ceoPctApprove: val.ceo.pctApprove/100,
+                            ceoPctDisapprove: val.ceo.pctDisapprove/100,
+                            ceoNumberOfRatings: val.ceo.numberOfRatings,
+                            ceoTitle: val.ceo.title,
+                            ceoName: val.ceo.name,
                             salaries: val.salaries
                         }, function(err, added) {
                             if (err) {
@@ -168,14 +178,14 @@ function pullSalaryPage(dataArr, name, id, page, nextSalPageCb) {
         var $ = cheerio.load(html.getBody());
 
         //detect if this is the last page, if not store next page string
-        lastPage = !!$('.pagingControls ul .current.last').html() ? true : !$('.pagingControls ul .current').html() ? true : false;
+        var lastPage = !!$('.pagingControls ul .current.last').html() ? true : !$('.pagingControls ul .current').html() ? true : false;
         page = lastPage ? null : !page.length ? '_P2' : '_P' + (+page.slice(2) + 1);
 
         //grab sections containing individual role salary info
         var jobSections = $('.jobTitleCol');
 
         //initialize variables for use in loop
-        var title = '';
+        var jobTitle = '';
         var salary = 0;
         var sampleSize = 0;
         var lowEnd = '';
@@ -189,12 +199,12 @@ function pullSalaryPage(dataArr, name, id, page, nextSalPageCb) {
             item = $(item);
 
             // populate vars with page content
-            title = item.find('span.i-occ.strong.noMargVert').html().trim();
+            jobTitle = item.find('span.i-occ.strong.noMargVert').html().trim();
             salary = item.find('.meanPay').html().replace(selectNonNumeric, '');
             sampleSize = item.find('.salaryCount').html().replace(selectNonNumeric, '');
 
-            // deal with hourly and monthly pay            
-            salaryFactor = title.indexOf('Hourly') >= 0 ? salaryFactor = 2000 : title.indexOf('Monthly') >= 0 ? 12 : 1;
+            // deal with hourly and monthly pay
+            salaryFactor = jobTitle.indexOf('Hourly') >= 0 ? salaryFactor = 2000 : jobTitle.indexOf('Monthly') >= 0 ? 12 : 1;
 
             // store low end and high end of range
             lowEnd = item.find('.rangeValues .alignLt').html().replace(selectNonNumeric, '') *
@@ -208,7 +218,7 @@ function pullSalaryPage(dataArr, name, id, page, nextSalPageCb) {
 
             // push results to array
             dataArr.push({
-                title: title.trim().replace(removeHourlyMonthly, ''),
+                jobTitle: jobTitle.trim().replace(removeHourlyMonthly, ''),
                 salary: salary,
                 lowEnd: lowEnd,
                 highEnd: highEnd,

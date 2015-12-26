@@ -7,6 +7,8 @@ node_modules
 *.DS_Store
 build
 *development.js
-*.jshintrc
 *.log
+.jshintrc
+.editorconfig
+.eslintrc
 ~*
