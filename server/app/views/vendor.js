@@ -4,4 +4,3 @@ require('angular-ui-router');
 require('angular-ui-bootstrap');
 require('d3');
 require('lodash');
-require('jquery');
