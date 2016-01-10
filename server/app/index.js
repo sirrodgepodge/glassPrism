@@ -3,6 +3,7 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     cookieParser = require('cookie-parser'),
     logger = require('morgan'),
+    swig = require('swig'),
     path = require('path'),
     favicon = require('serve-favicon');
 
@@ -31,8 +32,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Set view render engine
+// Set view render engine
+app.engine('html', swig.renderFile);
+app.setValue('view engine', 'html');
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
 
 // Set favicon
 app.use(favicon(app.getValue('faviconPath')));
@@ -47,7 +50,7 @@ app.use(express.static(path.join(root, './browser')));
 app.setValue('view cache', false);
 
 // Set cors
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
@@ -62,8 +65,8 @@ require('./configRoutes')(app);
 app.use('/api', require('./internalRoutes'));
 
 // All get routes that go through the pipeline, past /api, will get the single page layout
-app.get('/*', function(req, res) {
-    res.render('layout', {title:'glassPrism'});
+app.get('/*', (req, res) => {
+    res.render('index');
 });
 
 module.exports = app;
