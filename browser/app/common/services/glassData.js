@@ -1,14 +1,9 @@
-var globalcheck;
-
 app.service('glassData', function($http) {
 
-    var self = this;
-    globalcheck = self;
-
     this.selections = {
-        industry: null,
-        company: null,
-        jobTitle: null
+        industry: [],
+        company: [],
+        jobTitle: []
     };
 
     this.update = function(prop, val) {
@@ -21,13 +16,16 @@ app.service('glassData', function($http) {
         }
     };
 
-    this.retrieveFilteredData = function(obj) {
-        return $http.post('/api/glassDoorData', obj)
-        .then(function(data){
-            return Promise.resolve(data);
-        })
-        .catch(function(err){
+    this.filterData = function(prop, str) {
+
+        if(this.selections[prop].indexOf(str) > -1) this.selections[prop].filter(val => val !== str);
+        else this.selections[prop].push(str);
+
+        return $http.post('/api/glassDoorData', this.selections)
+        .then((data) => Promise.resolve(data))
+        .catch((err) =>{
             console.log(err);
+            return Promise.reject(err);
         });
     };
 });

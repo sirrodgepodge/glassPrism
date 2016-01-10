@@ -47,7 +47,7 @@ app.use(express.static(path.join(root, './public')));
 app.use(express.static(path.join(root, './browser')));
 
 // Views cache
-app.setValue('view cache', false);
+app.setValue('view cache', true);
 
 // Set cors
 app.use((req, res, next) => {
@@ -57,12 +57,11 @@ app.use((req, res, next) => {
 });
 
 
-// Pass our express application pipeline into the configuration
-// function located at server/app/configure/index.js
+// Configure auth
 require('./configRoutes')(app);
 
 // All data routes will be prefaced with /api
-app.use('/api', require('./internalRoutes'));
+app.use('/api', require('./appRoutes'));
 
 // All get routes that go through the pipeline, past /api, will get the single page layout
 app.get('/*', (req, res) => {
