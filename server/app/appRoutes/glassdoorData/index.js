@@ -4,7 +4,6 @@ var router = require('express').Router(),
     Job = mongoose.model('Job');
 
 router.post('/', function(req, res, next) {
-    console.log(req.body);
     Job.find().then(function(comments) {
         console.log(comments);
         res.json(comments);

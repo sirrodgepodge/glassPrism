@@ -2,7 +2,8 @@ var requestify = require('requestify'),
     cheerio = require('cheerio'),
     mongoose = require('mongoose'),
     startDb = require('../server/db'),
-    Job = mongoose.model('Job');
+    Job = mongoose.model('Job'),
+    PageTracker = mongoose.model('PageTracker');
 
 
 // create query object to be passed to api
@@ -14,7 +15,8 @@ var query = {
     format: "json",
     v: 1,
     action: "employers",
-    pn: 500,
+    pn: 1,
+    finishPn: 50,
     l: "United States",
     //q: "macy's",
 
@@ -31,28 +33,44 @@ var query = {
 const selectNonNumeric = /\D+/g;
 const removeHourlyMonthly = /\s-\s(hourly|monthly|contractor|hourly contractor)/ig;
 const findNA = /n\/a/ig;
-const dashifyUrl = /['-,\s\.]+/g;
-const findAmpersand = /&/g;
+const dashifyUrl = /[\W_]+/g;
+const findAmpersand = /\s?&\s?/g;
 const dashAtEnd = /(^-?)(.*(?=.))(-?$)/;
 
 
 // trigger after db connection
-startDb.then(function() {
-    return pullCompanyPage(query, function keepGoing() {
-        query.pn++;
-        if (query.pn <= query.totalNumberOfPages) {
-            console.log('Page', query.pn.toString(), 'here we go!!!');
-            pullCompanyPage(query, keepGoing);
-        } else {
-            console.log('\nDone at Last :)\n');
-            process.exit();
-        }
+startDb
+  .then(() => PageTracker.findOne())
+  .then(data => {
+    if(!!data) {
+      query.pn = data.pageNumber;
+      data.pageNumber = query.finishPn = query.pn + 50;
+      return data.save();
+    } else return PageTracker.create({
+        pageNumber: 50
     });
-});
+  })
+  .then(() => pullCompanyPage(query, function keepGoing() {
+      query.pn++;
+      if (query.pn <= query.finishPn && query.pn <= query.totalNumberOfPages) return pullCompanyPage(query, keepGoing);
+      return query.pn === query.totalNumberOfPages ? PageTracker.findOne()
+        .then(data => {
+          data.pageNumber = 1;
+          return data.save();
+        }).then(end) : end();
+  }))
+  .catch(err => console.log(err));
 
+function end() {
+  console.log('\nDone at Last :)\n');
+}
 
 // pull one api page
 function pullCompanyPage(queryObject, nextCompPageCb) {
+    // log query page number
+    console.log(`Page ${query.pn} here we go!!!`);
+
+    // make request
     requestify.request('http://api.glassdoor.com/api/api.htm', {
             method: 'GET',
             body: {},
@@ -84,7 +102,7 @@ function pullCompanyPage(queryObject, nextCompPageCb) {
             // loop through each employer, add salary data, then store information
             return employers.forEach(function(val, index) {
                 const id = val.id;
-                const name = val.name.trim().replace(dashifyUrl, '-').replace(findAmpersand, 'and').replace(dashAtEnd, '$2');
+                const name = val.name.trim().replace(findAmpersand, '-and-').replace(dashifyUrl, '-').replace(dashAtEnd, '$2');
 
                 // log employer ID and name
                 console.log(name, '-', val.industry, '-', val.numberOfRatings);
@@ -193,5 +211,10 @@ function pullSalaryPage(dataArr, name, id, page, nextSalPageCb) {
         // trigger callback if provided, feeding in next page number (null if last page)
         return nextSalPageCb ? nextSalPageCb(page) : null;
     })
-    .catch((err) => err.code !== 11000 ? console.log(err) : null);
+    .catch((err) => {
+      if(err.code !== 11000) {
+        console.log(name, ' ', id);
+        console.log(err);
+      }
+    });
 }
