@@ -120,8 +120,10 @@ function pullCompanyPage(queryObject, nextCompPageCb) {
                             ceo: val.ceo,
                             salaries: val.salaries
                         }, function(err, added) {
-                            if (err && err.code === 11000) console.log('\n' + val.name, "already exists :(");
-                            else console.log('\n' + val.name, "added!!!!!!!!!!");
+                            if (err) {
+                                if (err.code === 11000) console.log('\n' + val.name, "already exists :(");
+                                else console.log(err);
+                            } else console.log('\n' + val.name, "added!!!!!!!!!!");
                             queryObject.counter++;
                             return queryObject.counter >= queryObject.resultLength ?
                                 nextCompPageCb() :
@@ -190,5 +192,6 @@ function pullSalaryPage(dataArr, name, id, page, nextSalPageCb) {
         });
         // trigger callback if provided, feeding in next page number (null if last page)
         return nextSalPageCb ? nextSalPageCb(page) : null;
-    });
+    })
+    .catch((err) => err.code !== 11000 ? console.log(err) : null);
 }
