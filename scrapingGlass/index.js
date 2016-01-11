@@ -190,9 +190,5 @@ function pullSalaryPage(dataArr, name, id, page, nextSalPageCb) {
         });
         // trigger callback if provided, feeding in next page number (null if last page)
         return nextSalPageCb ? nextSalPageCb(page) : null;
-    })
-    .catch((err) => {
-      console.log(name, ' ', id);
-      console.log('err', err)
     });
 }
