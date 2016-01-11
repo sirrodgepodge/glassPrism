@@ -1,30 +1,8 @@
 var requestify = require('requestify'),
-    chalk = require('chalk'),
     cheerio = require('cheerio'),
     mongoose = require('mongoose'),
     startDb = require('../server/db'),
-    Company = mongoose.model('Company');
-
-////For job search
-// var queryObj = {
-//     "t.p": 42120,
-//     "t.k": "gHxlKTuKw6S",
-//     userip: "0.0.0.0",
-//     useragent: "",
-//     format: "json",
-//     v: 1,
-//     action: "jobs-stats",
-//     returnStates: true,
-//     //returnCities: true,
-//     //returnEmployers: true,
-//     //returnJobTitles: true,
-//     admLevelRequested: 1,
-//     jobType: "fulltime",
-//     fromAge: 14,
-//     country: "United States",
-//     state: "New York",
-//     city: "New York, NY"
-// };
+    Job = mongoose.model('Job');
 
 
 // create query object to be passed to api
@@ -50,11 +28,12 @@ var query = {
 
 
 // declare regular expressions
-var selectNonNumeric = /\D+/g;
-var removeHourlyMonthly = /\s-\s(hourly|monthly|contractor|hourly contractor)/ig;
-var findNA = /n\/a/ig;
-var dashifyUrl = /['-,\s\.]+/g;
-var findAmpersand = /&/g;
+const selectNonNumeric = /\D+/g;
+const removeHourlyMonthly = /\s-\s(hourly|monthly|contractor|hourly contractor)/ig;
+const findNA = /n\/a/ig;
+const dashifyUrl = /['-,\s\.]+/g;
+const findAmpersand = /&/g;
+const dashAtEnd = /(^-?)(.*(?=.))(-?$)/;
 
 
 // trigger after db connection
@@ -66,13 +45,9 @@ startDb.then(function() {
             pullCompanyPage(query, keepGoing);
         } else {
             console.log('\nDone at Last :)\n');
-            process.kill(1);
+            process.exit();
         }
     });
-})
-.catch(function(err){
-  console.error(chalk.red(err.stack));
-  process.kill(1);
 });
 
 
@@ -108,8 +83,8 @@ function pullCompanyPage(queryObject, nextCompPageCb) {
 
             // loop through each employer, add salary data, then store information
             return employers.forEach(function(val, index) {
-                var id = val.id;
-                var name = val.name.replace(dashifyUrl, '-').replace(findAmpersand, 'and');
+                const id = val.id;
+                const name = val.name.trim().replace(dashifyUrl, '-').replace(findAmpersand, 'and').replace(dashAtEnd, '$2');
 
                 // log employer ID and name
                 console.log(name, '-', val.industry, '-', val.numberOfRatings);
@@ -127,9 +102,9 @@ function pullCompanyPage(queryObject, nextCompPageCb) {
                         pullSalaryPage(val.salaries, name, id, newPage, recurseCallBack);
                     } else {
                         console.log('\n' + val.name, "done!!!!!");
-                        return Company.create({
+                        return Job.create({
                             glassDoorId: id,
-                            company: val.name,
+                            name: val.name,
                             website: val.website,
                             industry: val.industry,
                             numberOfRatings: val.numberOfRatings,
@@ -141,20 +116,12 @@ function pullCompanyPage(queryObject, nextCompPageCb) {
                             compensationAndBenefitsRating: +val.compensationAndBenefitsRating,
                             careerOpportunitiesRating: +val.careerOpportunitiesRating,
                             workLifeBalanceRating: +val.workLifeBalanceRating,
-                            pctRecommendToFriend: +val.recommendToFriendRating,
-                            ceoPctApprove: val.ceo.pctApprove/100,
-                            ceoPctDisapprove: val.ceo.pctDisapprove/100,
-                            ceoNumberOfRatings: val.ceo.numberOfRatings,
-                            ceoTitle: val.ceo.title,
-                            ceoName: val.ceo.name,
+                            recommendToFriendRating: +val.recommendToFriendRating,
+                            ceo: val.ceo,
                             salaries: val.salaries
                         }, function(err, added) {
-                            if (err) {
-                                if (err.message.indexOf('duplicate key error') > -1) console.log('\n' + val.name, "already exists :(");
-                                else console.log(err);
-                            } else {
-                                console.log('\n' + val.name, "added!!!!!!!!!!");
-                            }
+                            if (err && err.code === 11000) console.log('\n' + val.name, "already exists :(");
+                            else console.log('\n' + val.name, "added!!!!!!!!!!");
                             queryObject.counter++;
                             return queryObject.counter >= queryObject.resultLength ?
                                 nextCompPageCb() :
@@ -163,17 +130,13 @@ function pullCompanyPage(queryObject, nextCompPageCb) {
                     }
                 });
             });
-        }).catch(function(err) {
-            // log errors
-            return console.log(err);
-        });
+        }).catch((err) => console.log(err));
 }
 
 
 // pull data from a salary page
 function pullSalaryPage(dataArr, name, id, page, nextSalPageCb) {
-    requestify.get('http://www.glassdoor.com/Salary/' + name + '-Salaries-E' + id + page + '.htm').then(function(html) {
-
+    requestify.get('https://www.glassdoor.com/Salary/' + name + '-Salaries-E' + id + page + '.htm').then(function(html) {
         //load response into cheerio, i.e. server jQuery
         var $ = cheerio.load(html.getBody());
 
@@ -185,7 +148,7 @@ function pullSalaryPage(dataArr, name, id, page, nextSalPageCb) {
         var jobSections = $('.jobTitleCol');
 
         //initialize variables for use in loop
-        var jobTitle = '';
+        var title = '';
         var salary = 0;
         var sampleSize = 0;
         var lowEnd = '';
@@ -199,12 +162,12 @@ function pullSalaryPage(dataArr, name, id, page, nextSalPageCb) {
             item = $(item);
 
             // populate vars with page content
-            jobTitle = item.find('span.i-occ.strong.noMargVert').html().trim();
+            title = item.find('span.i-occ.strong.noMargVert').html().trim();
             salary = item.find('.meanPay').html().replace(selectNonNumeric, '');
             sampleSize = item.find('.salaryCount').html().replace(selectNonNumeric, '');
 
             // deal with hourly and monthly pay
-            salaryFactor = jobTitle.indexOf('Hourly') >= 0 ? salaryFactor = 2000 : jobTitle.indexOf('Monthly') >= 0 ? 12 : 1;
+            salaryFactor = title.indexOf('Hourly') >= 0 ? salaryFactor = 2000 : title.indexOf('Monthly') >= 0 ? 12 : 1;
 
             // store low end and high end of range
             lowEnd = item.find('.rangeValues .alignLt').html().replace(selectNonNumeric, '') *
@@ -218,7 +181,7 @@ function pullSalaryPage(dataArr, name, id, page, nextSalPageCb) {
 
             // push results to array
             dataArr.push({
-                jobTitle: jobTitle.trim().replace(removeHourlyMonthly, ''),
+                title: title.trim().replace(removeHourlyMonthly, ''),
                 salary: salary,
                 lowEnd: lowEnd,
                 highEnd: highEnd,
@@ -227,5 +190,9 @@ function pullSalaryPage(dataArr, name, id, page, nextSalPageCb) {
         });
         // trigger callback if provided, feeding in next page number (null if last page)
         return nextSalPageCb ? nextSalPageCb(page) : null;
+    })
+    .catch((err) => {
+      console.log(name, ' ', id);
+      console.log('err', err)
     });
 }

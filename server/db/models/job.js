@@ -36,11 +36,4 @@ var schema = new mongoose.Schema({
     }]
 });
 
-mongoose.model('Employer', schema);
-
-
-
-
-
-
-
+mongoose.model('Job', schema);

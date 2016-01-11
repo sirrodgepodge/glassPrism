@@ -1,11 +1,11 @@
 var router = require('express').Router(),
     mongoose = require('mongoose'),
     //bluebird = require('bluebird'),
-    Company = mongoose.model('Company');
+    Job = mongoose.model('Job');
 
 router.post('/', function(req, res, next) {
     console.log(req.body);
-    Company.find().then(function(comments) {
+    Job.find().then(function(comments) {
         console.log(comments);
         res.json(comments);
     }).catch(function(err){

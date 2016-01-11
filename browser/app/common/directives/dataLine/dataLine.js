@@ -36,7 +36,7 @@ app.directive('dataline', function($timeout, $interval, $rootScope, glassData) {
                     .attr("cx", (d) => xScale(d[xProp]))
                     .attr("r",  (d) => rScale(d[rProperty]))
                     .on('mouseover', tip.show)
-                    //.on('mouseout', tip.hide)
+                    .on('mouseout', tip.hide)
                     .on('click', (d) => glassData.filterData(typeProp, d[typeProp]));
             }
     };
@@ -54,4 +54,3 @@ app.directive('dataline', function($timeout, $interval, $rootScope, glassData) {
         }
     };
 });
-//});
