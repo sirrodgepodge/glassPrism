@@ -1,4 +1,4 @@
-app.service('AuthService', function($http, Session, $rootScope, AUTH_EVENTS, $q) {
+app.service('AuthService', ['$http', 'Session', '$rootScope', 'AUTH_EVENTS', '$q', function($http, Session, $rootScope, AUTH_EVENTS, $q) {
 
     function onSuccessfulAuth(response) {
         var data = response.data;
@@ -52,4 +52,4 @@ app.service('AuthService', function($http, Session, $rootScope, AUTH_EVENTS, $q)
         return $http.post('/api/admins/deleteuser', {email: deleteUserEmail});
     };
 
-});
+}]);
