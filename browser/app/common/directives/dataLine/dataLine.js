@@ -1,6 +1,12 @@
-app.directive('dataline', function($timeout, $interval, $rootScope, glassData) {
+app.directive('dataline', function($timeout,$window, $interval, $rootScope, glassData) {
+
 
     var lineCirclesLink = function(scope, element, attrs) {
+                glassData.filterData('industry', 'Internet')
+    scope.getNewData = function(){
+        console.log('click')
+        console.log(glassData.currentData)
+    }
             var rMin = 4, // min radius size
                 rMax = 35, // max radius size
                 rProperty = "sampleSize", // "r" property will always be sampleSize
@@ -11,6 +17,7 @@ app.directive('dataline', function($timeout, $interval, $rootScope, glassData) {
 
             function render(data, typeProp, xProp) {
                 // use provided ID selector
+                // data = glassData.currentData;
                 var lineToAppendTo = d3.select("#" + scope.lineId);
                 var tip = d3.tip()
                     .attr('class', 'd3-tip')
@@ -37,7 +44,7 @@ app.directive('dataline', function($timeout, $interval, $rootScope, glassData) {
                     .attr("r",  (d) => rScale(d[rProperty]))
                     .on('mouseover', tip.show)
                     .on('mouseout', tip.hide)
-                    .on('click', (d) => glassData.filterData(typeProp, d[typeProp]));
+                    .on('click', (d) => glassData.filterData('industry', 'Internet'));
             }
     };
 

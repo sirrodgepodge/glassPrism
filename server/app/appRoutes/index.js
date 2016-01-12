@@ -3,7 +3,7 @@ var Router = require('express').Router();
 // include API routes here
 Router.use('/admin', require('./admin'));
 Router.use('/comment', require('./comment'));
-Router.use('/glassdoordata', require('./glassdoorData'));
+Router.use('/glassDoorData', require('./glassdoorData'));
 
 // send error if route not found
 Router.use(function (req, res) {
@@ -11,3 +11,6 @@ Router.use(function (req, res) {
 });
 
 module.exports = Router;
+
+
+

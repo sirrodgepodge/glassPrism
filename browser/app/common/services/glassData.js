@@ -1,4 +1,5 @@
 app.service('glassData', function($http) {
+    this.currentData = [];
 
     this.selections = {
         industry: [],
@@ -17,15 +18,26 @@ app.service('glassData', function($http) {
     };
 
     this.filterData = function(prop, str) {
+        console.log(prop, str)
 
         if(this.selections[prop].indexOf(str) > -1) this.selections[prop].filter(val => val !== str);
         else this.selections[prop].push(str);
 
         return $http.post('/api/glassDoorData', this.selections)
-        .then((data) => Promise.resolve(data))
-        .catch((err) =>{
-            console.log(err);
-            return Promise.reject(err);
-        });
+        .then((data) => {
+            console.log(data.data)
+            this.currentData = data.data;
+        })
+        // .catch((err) =>{
+        //     console.log(err);
+        //     return Promise.reject(err);
+        // });
     };
+
+    this.getAllData =  function(){
+        return $http.get('/api/glassDoorData')
+            .then(function(data){ 
+                console.log(data.data)
+                this.currentData =  data.data})
+    }
 });
