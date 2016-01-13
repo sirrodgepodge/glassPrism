@@ -25,8 +25,22 @@ app.service('glassData', function($http) {
 
         return $http.post('/api/glassDoorData', this.selections)
         .then((data) => {
-            console.log(data.data)
-            this.currentData = data.data;
+                console.log(data.data)
+                this.currentData = data.data.map(function(obj){
+                        for(var i = 0; i< obj.salaries.length; i++){
+                            return {
+                                industry: obj.industry,
+                                jobTitle: obj.salaries[i].title,
+                                salary: obj.salaries[i].salary,
+                                company: obj.name,
+                                sampleSize: obj.salaries[i].sampleSize
+
+                            }
+                        }
+                })
+                var sendData = this.currentData;
+                // console.log(sendData)
+            return sendData
         })
         // .catch((err) =>{
         //     console.log(err);
