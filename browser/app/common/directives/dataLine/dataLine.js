@@ -18,7 +18,7 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
 
             var rMin = 4, // min radius size
                 rMax = 35, // max radius size
-                rProperty = "sampleSize", // "r" property will always be sampleSize
+                rProperty = "overallRating", // "r" property will always be sampleSize
                 xScale, // scaling x-axis, so values al fit on line and are relative
                 rScale, // scaling radius size
                 newData;
@@ -27,14 +27,18 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
 
             function render(data, typeProp, xProp) {
                 data = s;
+                data = data.sort(function(a,b){return a.salary - b.salary})
+                data = data.slice(data.length-6,data.length)
+                console.log(data)
                 var lineToAppendTo = d3.select("#" + scope.lineId);
                 var tip = d3.tip()
                     .attr('class', 'd3-tip')
                     .offset([-10, 0])
-                    .html((d) => "<span>" + d[typeProp] + "</span><br><span>$" + d.salary + "</span>");
+                    .html((d) => "<span>" + d[typeProp] + "</span><br><span>$" + d.salary + "</span><br><span>w/l "+ d.overallRating + "</span>");
                 lineToAppendTo.call(tip); // attach hover info to bubbles
 
-                xScale = d3.scale.linear().domain(d3.extent(data, (d) =>  d[xProp]))
+                xScale = d3.scale.linear().domain(d3.extent(data, function(d){
+                    return d[xProp]}))
                     .range([300, 1100]);
 
                 rScale = d3.scale.linear().domain(d3.extent(data, (d) => d[rProperty]))

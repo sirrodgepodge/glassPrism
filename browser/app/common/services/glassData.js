@@ -32,7 +32,7 @@ app.service('glassData', function($http) {
                                 jobTitle: obj.salaries[i].title,
                                 salary: obj.salaries[i].salary,
                                 company: obj.name,
-                                sampleSize: obj.salaries[i].sampleSize
+                                overallRating: obj.overallRating
 
                             }
                         }
