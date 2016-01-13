@@ -25,7 +25,6 @@ app.service('glassData', function($http) {
 
         return $http.post('/api/glassDoorData', this.selections)
         .then((data) => {
-                console.log(data.data)
                 this.currentData = data.data.map(function(obj){
                         for(var i = 0; i< obj.salaries.length; i++){
                             return {
@@ -51,7 +50,6 @@ app.service('glassData', function($http) {
     this.getAllData =  function(){
         return $http.get('/api/glassDoorData')
             .then(function(data){ 
-                console.log(data.data)
                 this.currentData =  data.data})
     }
 });

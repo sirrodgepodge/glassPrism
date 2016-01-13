@@ -3,7 +3,6 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
 
     var lineCirclesLink = function(scope, element, attrs) {
                 glassData.filterData('industry', 'Internet').then(function(s){
-                    console.log(s)
                 
             //remove later
             scope.getNewData = function(){
@@ -23,7 +22,6 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
             d3.json("sampleJSON/" + scope.lineId + ".json", (data) => render(data,scope.lineId, "salary"));
 
             function render(data, typeProp, xProp) {
-                console.log('this is test', data)
                 data = s;
                 var lineToAppendTo = d3.select("#" + scope.lineId);
                 var tip = d3.tip()
