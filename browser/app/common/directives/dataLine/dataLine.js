@@ -55,6 +55,8 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                     .transition()
                     .delay((d,i)=>(i*50))
                     .attr("r",  (d) => rScale(d[rProperty]))
+
+                circles
                     .on('mouseover', tip.show)
                     .on('mouseout', tip.hide)
                     .on('click', (d) => glassData.filterData('industry', 'Internet'));
