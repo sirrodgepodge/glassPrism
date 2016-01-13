@@ -6,8 +6,12 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                 
             //remove later
             scope.getNewData = function(){
-                console.log('click')
-                console.log(glassData.currentData)
+                var circles = d3.selectAll('circle')
+                circles
+                    .transition()
+                    .duration(500)
+                    .attr("r",  (d) => (rScale(d[rProperty]*2)))
+
             }
 
 
