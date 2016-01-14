@@ -26,7 +26,7 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                 var tip = d3.tip()
                     .attr('class', 'd3-tip')
                     .offset([-10, 0])
-                    .html((d) => "<span>" + d[typeProp] + "</span><br><span>$" + d.salary + "</span><br><span>rating: "+ d.overallRating + "</span>");
+                    .html((d) => "<span>" + d[typeProp] + "</span><br><span>$" + d.salary + "</span><br><span>rating: "+ d.overallRating + "</span><br><span>" + d.company + "</span>");
                 lineToAppendTo.call(tip); // attach hover info to bubbles
 
                 xScale = d3.scale.linear().domain(d3.extent(data, function(d){
@@ -41,6 +41,7 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                     .data(data)
                     .enter()
                     .append("circle");
+
 
                 circles
                     .attr("class", "data-line-circles")
@@ -59,30 +60,33 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                     .on('mouseout', tip.hide)
                     .on('click', (d) => glassData.filterData('industry', 'Internet'));
 
-
+        let startData = 0;
          scope.getNewData = function(s){
+                console.log(startData, s.length)
+                var newData = s.slice(startData,startData+6)
                 var circles = d3.selectAll('circle')
                 circles
                     .transition()
                     .attr('r', 0)
-                    .remove()
 
                 circles
-                    .data(s)
-                    .enter()
-                    .append('circle')
-
-                circles
-                    .attr("class", "data-line-circles")
-                    .attr("fill", "grey")
+                    .data(newData)
                     .attr("cy", (d) => 200)
                     .attr("cx", (d,i)=>{console.log(d[xProp], xScale(i))
                                         return i*100+300
                                         })
-                    .attr('r', 0)
+
+                circles
                     .transition()
                     .delay((d,i)=>(i*50))
-                    .attr("r",  (d) => rScale(d[rProperty]))
+                    .attr("r",  (d) => {
+                            console.log(d[rProperty])
+                        return rScale(d[rProperty])})
+
+                    if(startData >= s.length-1){
+                        startData = 0;
+                    }
+                    startData = startData + 6;
 
             }
 
