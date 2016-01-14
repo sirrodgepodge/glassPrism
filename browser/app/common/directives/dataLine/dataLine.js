@@ -28,7 +28,9 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                 var tip = d3.tip()
                     .attr('class', 'd3-tip')
                     .offset([-10, 0])
-                    .html((d) => "<span>" + d[typeProp] + "</span><br><span>$" + d.salary + "</span><br><span> work/life: "+ d.overallRating+ "</span>");
+                    .html((d) => {if(typeProp === 'company') 
+                        return "<span>" + d[typeProp] + "</span><br><span>"+d.jobTitle+"</span><br><span>$" + d.salary + "</span><br><span> work/life: "+ d.overallRating+ "</span>"
+                        return "<span>" + d[typeProp] + "</span><br><span>$" + d.salary + "</span><br><span> work/life: "+ d.overallRating+ "</span>"});
                 lineToAppendTo.call(tip); // attach hover info to bubbles
 
                 xScale = d3.scale.linear().domain(d3.extent(data, function(d){
