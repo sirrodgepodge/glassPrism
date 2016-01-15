@@ -23,7 +23,7 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                 data = glassData.filterByProp(typeProp, data)
                 data = data.slice(data.length-7, data.length)
 
-                console.log(data)
+                // console.log(data)
                 var lineToAppendTo = d3.select("#" + scope.lineId);
                 var tip = d3.tip()
                     .attr('class', 'd3-tip')
@@ -56,9 +56,9 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                         return 'grey'
                     })
                     .attr("cy", (d) => 200)
-                    .attr("cx", (d,i)=>{console.log(d[xProp], xScale(i))
-                                        return i*100+300
-                                        })
+                    .attr("cx", (d,i)=>{
+                        console.log(d[typeProp])
+                        return i*100+300})
                     .attr('r', 0)
                     .transition()
                     .delay((d,i)=>(i*50))
@@ -72,6 +72,7 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
         let startData = 0;
          scope.getNewData = function(data, typeProp){
                 var newData = glassData.filterByProp(typeProp, data)
+                // if(typeProp === "jobTitle") console.log(newData)
                 newData = newData.slice(startData,startData+6)
                 var circles = d3.selectAll('circle')
                 circles
@@ -81,7 +82,8 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                 circles
                     .data(newData)
                     .attr("cy", (d) => 200)
-                    .attr("cx", (d,i)=>{console.log(d[xProp], xScale(i))
+                    .attr("cx", (d,i)=>{
+                                         // if(typeProp ==='jobTitle') console.log(d[typeProp])
                                         return i*100+300
                                         })
 
@@ -89,8 +91,9 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                     .transition()
                     .delay((d,i)=>(i*50))
                     .attr("r",  (d) => {
-                            console.log(d[rProperty])
                         return rScale(d[rProperty])})
+
+                    
                 circles
                     .transition()
                     .delay('1000')
@@ -101,7 +104,6 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                         }
                         return 'grey'
                     })
-
                     if(startData >= s.length-1){
                         startData = 0;
                     }

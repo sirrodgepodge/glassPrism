@@ -62,8 +62,11 @@ app.service('glassData', function($http) {
         if(this.selections[prop].indexOf(str) > -1) this.selections[prop].filter(val => val !== str);
         else this.selections[prop].push(str);
 
+        var startTime = new Date()
         return $http.post('/api/glassDoorData', this.selections)
         .then((data) => {
+                var afterData = new Date()
+                console.log("this took "+ ((afterData-startTime)/1000)+" seconds")
                 this.currentData = data.data.map(function(obj){
                         for(var i = 0; i< obj.salaries.length; i++){
                             return {
