@@ -1,4 +1,5 @@
 var gulp = require('gulp'),
+    plumber = require('gulp-plumber'),
     concat = require('gulp-concat'),
     ngAnnotate = require('gulp-ng-annotate'),
     uglify = require('gulp-uglify'),
@@ -6,11 +7,10 @@ var gulp = require('gulp'),
     handleErrors = require('../lib/handleErrors');
 
 gulp.task('buildJSProduction', function(){
-    return gulp.src('./browser/**/*.js')
+    return gulp.src(['./browser/app.js', './browser/**/*.js'])
+        .pipe(plumber())
         .pipe(concat('main.js'))
-        .pipe(babel({
-    			presets: ['es2015']
-    		}))
+        .pipe(babel())
         .pipe(ngAnnotate())
         .pipe(uglify())
         .on('error', handleErrors)
