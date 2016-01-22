@@ -2,24 +2,29 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
 
 
     var lineCirclesLink = function(scope, element, attrs) {
-                glassData.filterData('industry', 'Internet').then(function(s){
+    
+    glassData.filterData('industry', 'Internet').then(function(s){
             scope.allData = s;
             //remove later
+            render(s,scope.lineId, "salary")
+    })
 
+    let startData = 6;
+    var rMin = 10, // min radius size
+    rMax = 35, // max radius size
+    rProperty = "overallRating", // "r" property will always be sampleSize
+    xScale, // scaling x-axis, so values al fit on line and are relative
+    rScale, // scaling radius size
+    newData;
 
-
-            var rMin = 10, // min radius size
-                rMax = 35, // max radius size
-                rProperty = "overallRating", // "r" property will always be sampleSize
-                xScale, // scaling x-axis, so values al fit on line and are relative
-                rScale, // scaling radius size
-                newData;
-
-            d3.json("sampleJSON/" + scope.lineId + ".json", (data) => render(data,scope.lineId, "salary"));
 
             function render(data, typeProp, xProp) {
+
+
+
+
+
                 //bad form must fix
-                data = s;
                 data = glassData.filterByProp(typeProp, data)
                 data = data.slice(data.length-7, data.length)
 
@@ -67,13 +72,20 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                 circles
                     .on('mouseover', tip.show)
                     .on('mouseout', tip.hide)
-                    .on('click', (d) => glassData.filterData('industry', 'Internet'));
+                    .on('click', (d) => getNewData(data, scope.lineId, startData));
 
-        let startData = 0;
-         scope.getNewData = function(data, typeProp){
+        
+
+            }
+     
+
+        var getNewData = function(data, typeProp, dataposition){
                 var newData = glassData.filterByProp(typeProp, data)
-                // if(typeProp === "jobTitle") console.log(newData)
-                newData = newData.slice(startData,startData+6)
+                console.log('hit directive '+ typeProp)
+                console.log(dataposition, newData)
+                // newData = newData.slice(dataposition,dataposition+6)
+                console.log(newData)
+                if(typeProp === "jobTitle") console.log(newData)
                 var circles = d3.selectAll('circle')
                 circles
                     .transition()
@@ -104,16 +116,13 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                         }
                         return 'grey'
                     })
-                    if(startData >= s.length-1){
-                        startData = 0;
+                    if(dataposition >= data.length-1){
+                        dataposition = 0;
                     }
 
-                    startData = startData + 6;
+                    dataposition = dataposition + 6;
 
             }
-
-            }
-        })
             
     };
 

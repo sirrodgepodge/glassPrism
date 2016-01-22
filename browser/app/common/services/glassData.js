@@ -48,6 +48,7 @@ app.service('glassData', function($http) {
                         }
                     }
                 jobData = jobData.sort((a,b)=>a.salary-b.salary)
+                console.log(jobData)
                 data = jobData
                 }
                 else if(typeProp === "company"){
