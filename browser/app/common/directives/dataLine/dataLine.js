@@ -3,7 +3,9 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
     const splitIntoThree = /\d{3}/g;
     const putCommasInThoseBitches = function(num) {
         if(typeof num !== 'string') num = num.toString();
-        return num.slice(0, num%3).concat(',', num.match(splitIntoThree).join(','));
+        var str = num.slice(0, num%3).concat(',', num.match(splitIntoThree).join(','));
+        if(str[0]==','){str = str.slice(1); return str}
+        return str;
     };
 
     var lineCirclesLink = function(scope, element, attrs) {
