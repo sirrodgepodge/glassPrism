@@ -43,7 +43,7 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
             lineToAppendTo.call(tip); // attach hover info to bubbles
 
             const xScale = d3.scale.linear().domain(d3.extent(data, (d) => d[scope.xProp])) // scaling x-axis, so values al fit on line and are relative
-                .range([300, 1100]);
+                .range([300, 900]);
 
             const rScale = d3.scale.linear().domain([1,5]) // scaling radius size
                 .range([rMin, rMax]);
@@ -58,7 +58,9 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
 
             circles
                 .attr("cy", (d) => 200)
-                .attr("cx", (d,i) => i*100+300)
+                .attr("cx", (d,i) => {
+                    if(i>0)if(xScale(d.salary) - xScale(data[i-1].salary) < 50) return (xScale(d.salary)+(50*i))
+                    return xScale(d.salary)})
                 .attr('r', 0)
                 .transition()
                 .delay((d,i)=>(i*50))
