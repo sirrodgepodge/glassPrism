@@ -75,10 +75,11 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                 .on('click', (d,i) =>{
                     focusCircle = focusCircle.slice(focusCircle.length)
                     focusCircle = focusCircle.concat('circle-',i,'-',typeProp) 
-                   return scope.filterLines({
+                  scope.filterLines({
                         prop: scope.lineId,
                         val: d[scope.lineId]
                     })});
+
         }
 
         function getNewData(data, typeProp, dataposition, currentCircle) {
@@ -148,6 +149,38 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                     .delay(500)
                     .duration(500)
                     .attr('cx', 350)
+                var fakeData = [1,2,3,4,5]
+            const lineToAppendTo = d3.select("#" + scope.lineId)
+                    var fakeCirclesLine = lineToAppendTo.selectAll('fakeData' + typeProp)
+
+                    var tempXScale = d3.scale.linear().domain([1,5]).range([500,900])
+
+                        fakeCirclesLine
+                            .data(fakeData)
+                            .enter()
+                            .append('circle')
+                            .attr('class', 'tempCircles' + typeProp)
+                            .attr('fill', 'grey')
+                            .attr('r', 0)
+                            .attr('cx', 300)
+                            .attr("cy", 200)
+                            .transition()
+                            .delay(1000)
+                            .duration(500)
+                            .ease('linear')
+                            .attr('r', 20)
+                            .attr('cx',(d)=>tempXScale(d))
+
+
+                        var fakeCircles = d3.selectAll('.tempCircles'+typeProp)
+                        fakeCircles.on('click', (d)=>{
+                            console.log('something')
+                            fakeCircles
+                                .remove()
+                            circle.remove()
+                            circles.remove()
+                            render(scope.lineData, scope.lineId)
+                        })
 
              
 
