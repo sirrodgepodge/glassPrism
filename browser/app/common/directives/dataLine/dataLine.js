@@ -10,17 +10,18 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
 
     var lineCirclesLink = function(scope, element, attrs) {
 
-        var dirty = false; // checks for one succesful render to direct to render or getNewData, should probs make these the same if we can
+        var dirty = false, // checks for one succesful render to direct to render or getNewData, should probs make these the same if we can
+            focusCircle = 'null'; // to animate the tranistion between all data and focused data
 
         const startData = 6,
         rMin = 10, // min radius size
         rMax = 35, // max radius size
-        rProperty = "overallRating"; // "r" property will always be sampleSize
+        rProperty = "overallRating";// "r" property will always be sampleSize
 
         // Re-draw pies upon changes to 'passedData'
         scope.$watch('lineData', (newVal, oldVal) =>
             dirty ?
-            getNewData(scope.lineData, scope.lineId, startData) :
+            getNewData(scope.lineData, scope.lineId, startData, focusCircle) :
             render(scope.lineData, scope.lineId));
 
         scope.xProp = "salary"; // initialize xProp with salary
@@ -53,6 +54,7 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                 .data(data)
                 .enter()
                 .append("circle")
+                .attr('id', (d,i)=>'circle-'+i)
                 .attr("class", "data-line-circles")
                 .attr("fill", (d) => d[rProperty] <2.5 ? 'red' : 'grey');
 
@@ -65,18 +67,23 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                 .transition()
                 .delay((d,i)=>(i*50))
                 .attr("r",  (d) => rScale(d[rProperty]));
+                
 
             circles
                 .on('mouseover', tip.show)
                 .on('mouseout', tip.hide)
-                .on('click', (d) =>
-                    scope.filterLines({
+                .on('click', (d,i) =>{
+                    focusCircle = focusCircle.slice(focusCircle.length)
+                    focusCircle = focusCircle.concat('circle-',i) 
+                   return scope.filterLines({
                         prop: scope.lineId,
                         val: d[scope.lineId]
-                    }));
+                    })});
         }
 
-        function getNewData(data, typeProp, dataposition) {
+        function getNewData(data, typeProp, dataposition, currentCircle) {
+            console.log(typeProp, dataposition, currentCircle)
+            if(currentCircle==='null')return 0;
             const newData = glassData.filterByProp(typeProp, data);
             // console.log('hit directive '+ typeProp);
             // console.log(dataposition, newData);
@@ -89,26 +96,61 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
             const rScale = d3.scale.linear().domain([1,5]) // scaling radius size
                 .range([rMin, rMax]);
 
-            const circles = d3.selectAll('circle');
+            var circles = d3.selectAll('circle');
+            var circle = d3.select('#'+currentCircle)
+            circles[0] = circles[0].filter((obj)=>{
+                console.log(obj !== circle[0][0])
+                if(obj !== circle[0][0])return true;
+                return false;
+            })
 
+            var arr =[1,2,3,4,5,6]
+            arr = arr.filter(function(obj){
+                return obj <4
+            })
+            console.log(circles[0])
             circles
                 .transition()
                 .attr('r', 0);
 
-            circles
-                .data(newData)
-                .attr("cy", (d) => 200)
-                .attr("cx", (d,i)=> i*100+300);
+            // circles
+            //     .data(newData)
+            //     .attr("cy", (d) => 200)
+            //     .attr("cx", (d,i)=> i*100+300);
 
-            circles
-                .transition()
-                .delay((d,i)=>(i*50))
-                .attr("r",(d) => rScale(d[rProperty]))
-                .transition()
-                .delay('1000')
-                .attr("fill", (d) => d[rProperty] <2.5 ? 'red' : 'grey');
+            // circles
+            //     .transition()
+            //     .delay((d,i)=>(i*50))
+            //     .attr("r",(d) => rScale(d[rProperty]))
+            //     .transition()
+            //     .delay('1000')
+            //     .attr("fill", (d) => d[rProperty] <2.5 ? 'red' : 'grey');
 
-            dataposition = dataposition >= data.length-1 ? dataposition + 6 : dataposition = 0;
+            // dataposition = dataposition >= data.length-1 ? dataposition + 6 : dataposition = 0;
+            // var newData = []
+            // newData.length = 6;
+            // newData = $window._.map(newData,function(obj, index){
+            //     return {
+            //         jobTitle: 'job ' + index,
+            //         salary: (100000*(index/10))
+            //     }
+            // })
+            
+            
+            console.log(circle[0])
+                circle
+                    .transition()
+                    .ease('linear')
+                    .attr('r', 50)
+
+                circle
+                    .transition()
+                    .delay(500)
+                    .duration(500)
+                    .attr('cx', 350)
+
+             
+
         }
 
     };
