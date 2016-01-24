@@ -50,12 +50,12 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                 .range([rMin, rMax]);
 
             const circles = lineToAppendTo
-                .selectAll("circle")
+                .selectAll('prop-'+typeProp)
                 .data(data)
                 .enter()
                 .append("circle")
-                .attr('id', (d,i)=>'circle-'+i)
-                .attr("class", "data-line-circles")
+                .attr('id', (d,i)=>'circle-'+i +'-'+ typeProp)
+                .attr("class", "data-line-circles prop-"+typeProp)
                 .attr("fill", (d) => d[rProperty] <2.5 ? 'red' : 'grey');
 
             circles
@@ -74,7 +74,7 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                 .on('mouseout', tip.hide)
                 .on('click', (d,i) =>{
                     focusCircle = focusCircle.slice(focusCircle.length)
-                    focusCircle = focusCircle.concat('circle-',i) 
+                    focusCircle = focusCircle.concat('circle-',i,'-',typeProp) 
                    return scope.filterLines({
                         prop: scope.lineId,
                         val: d[scope.lineId]
@@ -96,7 +96,7 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
             const rScale = d3.scale.linear().domain([1,5]) // scaling radius size
                 .range([rMin, rMax]);
 
-            var circles = d3.selectAll('circle');
+            var circles = d3.selectAll('.prop-' + typeProp);
             var circle = d3.select('#'+currentCircle)
             circles[0] = circles[0].filter((obj)=>{
                 console.log(obj !== circle[0][0])
