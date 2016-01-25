@@ -20,6 +20,7 @@ app.controller('HomeCtrl', ['$scope', '$http', '$rootScope', '$state', '$statePa
     //     $scope.appFilter = Session.search;
     // });
 
+    $rootScope.directiveCheck = '';
     $scope.currentData = [];
 
     // can be called without values for default state
