@@ -59,14 +59,15 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                 .attr("fill", (d) => d[rProperty] <2.5 ? 'red' : 'grey');
 
             circles
-                .attr("cy", (d) => 200)
-                .attr("cx", (d,i) => {
-                    if(i>0)if(xScale(d.salary) - xScale(data[i-1].salary) < 50) return (xScale(d.salary)+(50*i))
-                    return xScale(d.salary)})
+                .attr("cy", 200)
+                .attr('cx', 600)
                 .attr('r', 0)
                 .transition()
                 .delay((d,i)=>(i*50))
-                .attr("r",  (d) => rScale(d[rProperty]));
+                .attr("r",  (d) => rScale(d[rProperty]))
+                .attr("cx", (d,i) => {
+                    if(i>0)if(xScale(d.salary) - xScale(data[i-1].salary) < 50) return (xScale(d.salary)+(50*i))
+                    return xScale(d.salary)})
                 
 
             circles
@@ -175,9 +176,17 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                         var fakeCircles = d3.selectAll('.tempCircles'+typeProp)
                         fakeCircles.on('click', (d)=>{
                             console.log('something')
-                            fakeCircles
+                        fakeCircles
+                                .transition()
+                                .attr('r',0)
                                 .remove()
+
+                        
                             circle.remove()
+                                .transition()
+                                .delay(1000)
+                                .attr('r',0)
+                                .remove()
                             circles.remove()
                             render(scope.lineData, scope.lineId)
                         })
