@@ -101,14 +101,14 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
             d3.select('#button-0-'+typeProp)
                 .on('click', function(){
                     startData = startData + 6;
-                    if(startData > 50) startData = 0;
+                    if(startData > 50) startData = startData - 6;
                     console.log('hit', startData)
                     trimmedData = data.slice(data.length-startData-7, data.length-startData) 
                     console.log(trimmedData)
                     var changeCircles = d3.select("#" + scope.lineId).transition()
 
                     const newXScale = d3.scale.linear().domain(d3.extent(data, (d) => d[scope.xProp])) // scaling x-axis, so values al fit on line and are relative
-                        .range([300, 1000])
+                        .range([300, 900])
 
                     circles
                         .data(trimmedData)
@@ -131,8 +131,10 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                     console.log(trimmedData)
                     var changeCircles = d3.select("#" + scope.lineId).transition()
 
-                    const newXScale = d3.scale.linear().domain(d3.extent(data, (d) => d[scope.xProp])) // scaling x-axis, so values al fit on line and are relative
-                        .range([300, 1000])
+                    const newXScale = d3.scale.linear().domain(d3.extent(trimmedData, (d) => d[scope.xProp])) // scaling x-axis, so values al fit on line and are relative
+                        .range([300, 900])
+
+                    console.log()
 
                     circles
                         .data(trimmedData)
