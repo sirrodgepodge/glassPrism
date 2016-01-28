@@ -2,9 +2,11 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
 
     const splitIntoThree = /\d{3}/g;
     const putCommasInThoseBitches = function(num) {
+        console.log(num)
         if(typeof num !== 'string') num = num.toString();
         var str = num.slice(0, num%3).concat(',', num.match(splitIntoThree).join(','));
         if(str[0]==','){str = str.slice(1); return str}
+        console.log(str)
         return str;
     };
 
@@ -21,7 +23,7 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
         // Re-draw pies upon changes to 'passedData'
         scope.$watch('lineData', (newVal, oldVal) =>
             dirty ?
-            getNewData(scope.lineData, scope.lineId, startData, focusCircle) :
+            getNewData(scope.ZoomFilterValue, scope.lineData, scope.lineId, startData, focusCircle) :
             render(scope.lineData, scope.lineId));
 
         scope.xProp = "salary"; // initialize xProp with salary
@@ -77,7 +79,8 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                     console.log('this' +typeProp)
                     $rootScope.directiveCheck = typeProp
                     focusCircle = focusCircle.slice(focusCircle.length)
-                    focusCircle = focusCircle.concat('circle-',i,'-',typeProp) 
+                    focusCircle = focusCircle.concat('circle-',i,'-',typeProp)
+                    scope.ZoomFilterValue = d[scope.lineId]; 
                   scope.filterLines({
                         prop: scope.lineId,
                         val: d[scope.lineId]
@@ -85,11 +88,12 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
 
         }
 
-        function getNewData(data, typeProp, dataposition, currentCircle) {
-            console.log('type', $rootScope.directiveCheck)
+        function getNewData(filter,data, typeProp, dataposition, currentCircle) {
             if($rootScope.directiveCheck !==typeProp )return 0;
-            const newData = glassData.filterByProp(typeProp, data);
-            newData = newData.slice(dataposition,dataposition+6)
+            data = data.filter((obj)=> obj[typeProp] === filter)
+            data = data.sort((a,b)=> b.salary - a.salary);
+            data = data.slice(0,6)
+            console.log(data)
             const xScale = d3.scale.linear().domain(d3.extent(data, (d) => d[scope.xProp])) // scaling x-axis, so values al fit on line and are relative
                 .range([300, 1100]);
 
@@ -105,50 +109,35 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
 
             circles
                 .transition()
-                .attr('r', 0);
-
-            // circles
-            //     .data(newData)
-            //     .attr("cy", (d) => 200)
-            //     .attr("cx", (d,i)=> i*100+300);
-
-            // circles
-            //     .transition()
-            //     .delay((d,i)=>(i*50))
-            //     .attr("r",(d) => rScale(d[rProperty]))
-            //     .transition()
-            //     .delay('1000')
-            //     .attr("fill", (d) => d[rProperty] <2.5 ? 'red' : 'grey');
-
-            // dataposition = dataposition >= data.length-1 ? dataposition + 6 : dataposition = 0;
-            // var newData = []
-            // newData.length = 6;
-            // newData = $window._.map(newData,function(obj, index){
-            //     return {
-            //         jobTitle: 'job ' + index,
-            //         salary: (100000*(index/10))
-            //     }
-            // })
-            
+                .attr('r', 0);            
             
                 circle
                     .transition()
                     .ease('linear')
                     .attr('r', 40)
 
+            
+
                 circle
                     .transition()
                     .delay(500)
                     .duration(500)
                     .attr('cx', 600)
-                var fakeData = [1,2,4,5,6,7]
+                
             const lineToAppendTo = d3.select("#" + scope.lineId)
                     var fakeCirclesLine = lineToAppendTo.selectAll('fakeData' + typeProp)
+                      const smallTip = d3.tip()
+                .attr('class', 'd3-tip')
+                .offset([-10, 0])
+                .html((d) => typeProp === 'company' ?
+                        `<span>${d[typeProp]}</span><br><span>${d.jobTitle}</span><br><span>$${scope.xProp === 'salary' && d[scope.xProp] ? putCommasInThoseBitches(d[scope.xProp]) : d[scope.xProp]}</span><br><span> work/life: ${d[rProperty]}</span>` :
+                        `<span>${d[typeProp]}</span><br><span>$${scope.xProp === 'salary' && d[scope.xProp] ? putCommasInThoseBitches(d[scope.xProp]) : d[scope.xProp]}</span><br><span> work/life: ${d[rProperty]}</span>`);
+            lineToAppendTo.call(smallTip); 
 
-                    var tempXScale = d3.scale.linear().domain(d3.extent(fakeData, (d)=>d)).range([300,900])
+                    var tempXScale = d3.scale.linear().domain(d3.extent(data, (d)=>d.salary)).range([300,900])
                         console.log('hit' + typeProp)
                         fakeCirclesLine
-                            .data(fakeData)
+                            .data(data)
                             .enter()
                             .append('circle')
                             .attr('class', 'tempCircles' + typeProp)
@@ -165,22 +154,26 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                             .ease('linear')
                             .attr('r', 20)
                             .attr('cx',(d,i)=>{
-                                if(tempXScale(d)=== 600){
-                                    if(tempXScale(fakeData[i-1]) === 500){ return (tempXScale(d)+100)}
-                                    if(tempXScale(fakeData[i+1]) === 700){ return (tempXScale(d)-100)}
-                                }
-                                return tempXScale(d)})
+                                if((i*100)+300 >= 600) return (i*100)+400
+                                return (i*100)+300
+                            })
+
+
 
 
 
                         var fakeCircles = d3.selectAll('.tempCircles'+typeProp)
-                        fakeCircles.on('click', (d)=>{
-                            console.log('something')
+                        fakeCircles
+                            .on('mouseover', smallTip.show)
+                            .on('mouseout', smallTip.hide)
+                            .on('click', (d)=>{
+                            
                         fakeCircles
                                 .transition()
                                 .attr('r',0)
                                 .remove()
 
+                            d3.selectAll('.d3-tip').remove()
                         
                             circle.remove()
                                 .transition()
