@@ -90,6 +90,7 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                 .enter()
                 .append('rect')
                 .attr('id', (d,i)=>'button-'+i + '-'+ typeProp)
+                .attr('class', 'button-'+ typeProp)
                 .attr('fill', 'darkgrey')
                 .attr('x', (d,i)=> {if(i===1)return 1000
                                     return 200})
@@ -247,7 +248,9 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                                 .remove()
 
                             d3.selectAll('.d3-tip').remove()
-                            d3.selectAll('rect').remove()
+                            var rects = d3.selectAll('.button-'+typeProp)
+                            console.log(rects)
+                            rects.remove()
                         
                             circle.remove()
                                 .transition()
