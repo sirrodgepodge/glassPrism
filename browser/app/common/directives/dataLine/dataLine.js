@@ -1,14 +1,9 @@
 app.directive('dataline', function($timeout,$window, $interval, $rootScope, glassData) {
 
     const splitIntoThree = /\d{3}/g;
-    const putCommasInThoseBitches = function(num) {
-        console.log(num)
-        if(typeof num !== 'string') num = num.toString();
-        var str = num.slice(0, num%3).concat(',', num.match(splitIntoThree).join(','));
-        if(str[0]==','){str = str.slice(1); return str}
-        console.log(str)
-        return str;
-    };
+    const numberWithCommas = function(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
 
     var lineCirclesLink = function(scope, element, attrs) {
 
@@ -41,8 +36,8 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                 .attr('class', 'd3-tip')
                 .offset([-10, 0])
                 .html((d) => typeProp === 'company' ?
-                        `<span>${d[typeProp]}</span><br><span>${d.jobTitle}</span><br><span>$${scope.xProp === 'salary' && d[scope.xProp] ? putCommasInThoseBitches(d[scope.xProp]) : d[scope.xProp]}</span><br><span> work/life: ${d[rProperty]}</span>` :
-                        `<span>${d[typeProp]}</span><br><span>$${scope.xProp === 'salary' && d[scope.xProp] ? putCommasInThoseBitches(d[scope.xProp]) : d[scope.xProp]}</span><br><span> work/life: ${d[rProperty]}</span>`);
+                        `<span>${d[typeProp]}</span><br><span>${d.jobTitle}</span><br><span>$${scope.xProp === 'salary' && d[scope.xProp] ? numberWithCommas(d[scope.xProp]) : d[scope.xProp]}</span><br><span> work/life: ${d[rProperty]}</span>` :
+                        `<span>${d[typeProp]}</span><br><span>$${scope.xProp === 'salary' && d[scope.xProp] ? numberWithCommas(d[scope.xProp]) : d[scope.xProp]}</span><br><span> work/life: ${d[rProperty]}</span>`);
             lineToAppendTo.call(tip); // attach hover info to bubbles
 
             const xScale = d3.scale.linear().domain(d3.extent(data, (d) => d[scope.xProp])) // scaling x-axis, so values al fit on line and are relative
@@ -91,9 +86,8 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
         function getNewData(filter,data, typeProp, dataposition, currentCircle) {
             if($rootScope.directiveCheck !==typeProp )return 0;
             data = data.filter((obj)=> obj[typeProp] === filter)
-            data = data.sort((a,b)=> b.salary - a.salary);
-            data = data.slice(0,6)
-            console.log(data)
+                 data = data.sort((a,b)=> b.salary - a.salary);
+                 data = data.slice(0,6)
             const xScale = d3.scale.linear().domain(d3.extent(data, (d) => d[scope.xProp])) // scaling x-axis, so values al fit on line and are relative
                 .range([300, 1100]);
 
@@ -129,9 +123,8 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                       const smallTip = d3.tip()
                 .attr('class', 'd3-tip')
                 .offset([-10, 0])
-                .html((d) => typeProp === 'company' ?
-                        `<span>${d[typeProp]}</span><br><span>${d.jobTitle}</span><br><span>$${scope.xProp === 'salary' && d[scope.xProp] ? putCommasInThoseBitches(d[scope.xProp]) : d[scope.xProp]}</span><br><span> work/life: ${d[rProperty]}</span>` :
-                        `<span>${d[typeProp]}</span><br><span>$${scope.xProp === 'salary' && d[scope.xProp] ? putCommasInThoseBitches(d[scope.xProp]) : d[scope.xProp]}</span><br><span> work/life: ${d[rProperty]}</span>`);
+                .html((d) => 
+                        `<span>${d.company}</span><br><span>${d.jobTitle}</span><br><span>$${scope.xProp === 'salary' && d[scope.xProp] ? numberWithCommas(d[scope.xProp]) : d[scope.xProp]}</span><br><span> work/life: ${d[rProperty]}</span>`);
             lineToAppendTo.call(smallTip); 
 
                     var tempXScale = d3.scale.linear().domain(d3.extent(data, (d)=>d.salary)).range([300,900])
