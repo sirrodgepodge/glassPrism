@@ -8,10 +8,10 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
     var lineCirclesLink = function(scope, element, attrs) {
 
         var dirty = false, // checks for one succesful render to direct to render or getNewData, should probs make these the same if we can
-            focusCircle = 'null'// to animate the tranistion between all data and focused data
-
-        const startData = 6,
-        rMin = 10, // min radius size
+            focusCircle = 'null',// to animate the tranistion between all data and focused data
+            startData = 0;
+        
+        const rMin = 10, // min radius size
         rMax = 35, // max radius size
         rProperty = "overallRating";// "r" property will always be sampleSize
 
@@ -19,16 +19,18 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
         scope.$watch('lineData', (newVal, oldVal) =>
             dirty ?
             getNewData(scope.ZoomFilterValue, scope.lineData, scope.lineId, startData, focusCircle) :
-            render(scope.lineData, scope.lineId));
+            render(scope.lineData, scope.lineId, startData));
 
         scope.xProp = "salary"; // initialize xProp with salary
 
-        function render(data, typeProp) {
+       // addscroll buttons
+
+        function render(data, typeProp, start) {
             if(!data.length) return;
             dirty = true;
             //bad form must fix
             data = glassData.filterByProp(typeProp, data);
-            data = data.slice(data.length-7, data.length);
+            var trimmedData = data.slice(data.length-start-7, data.length-start);
 
             // console.log(data)
             const lineToAppendTo = d3.select("#" + scope.lineId);
@@ -40,7 +42,7 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                         `<span>${d[typeProp]}</span><br><span>$${scope.xProp === 'salary' && d[scope.xProp] ? numberWithCommas(d[scope.xProp]) : d[scope.xProp]}</span><br><span> work/life: ${d[rProperty]}</span>`);
             lineToAppendTo.call(tip); // attach hover info to bubbles
 
-            const xScale = d3.scale.linear().domain(d3.extent(data, (d) => d[scope.xProp])) // scaling x-axis, so values al fit on line and are relative
+            const xScale = d3.scale.linear().domain(d3.extent(trimmedData, (d) => d[scope.xProp])) // scaling x-axis, so values al fit on line and are relative
                 .range([300, 900]);
 
             const rScale = d3.scale.linear().domain([1,5]) // scaling radius size
@@ -48,7 +50,7 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
 
             const circles = lineToAppendTo
                 .selectAll('prop-'+typeProp)
-                .data(data)
+                .data(trimmedData)
                 .enter()
                 .append("circle")
                 .attr('id', (d,i)=>'circle-'+i +'-'+ typeProp)
@@ -63,7 +65,8 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                 .delay((d,i)=>(i*50))
                 .attr("r",  (d) => rScale(d[rProperty]))
                 .attr("cx", (d,i) => {
-                    if(i>0)if(xScale(d.salary) - xScale(data[i-1].salary) < 50) return (xScale(d.salary)+(50*i))
+                    if(i>0)if(xScale(d.salary) - xScale(trimmedData[i-1].salary) < 50) return (xScale(d.salary)+(50*i))
+                    console.log(xScale(d.salary))
                     return xScale(d.salary)})
                 
 
@@ -80,6 +83,68 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                         prop: scope.lineId,
                         val: d[scope.lineId]
                     })});
+            
+
+            var buttondata = ['forward', 'back']
+            lineToAppendTo.selectAll('button-circles')
+                .data(buttondata)
+                .enter()
+                .append('rect')
+                .attr('id', (d,i)=>'button-'+i + '-'+ typeProp)
+                .style('fill', 'darkgrey')
+                .attr('x', (d,i)=> {if(i===1)return 1000
+                                    return 200})
+                .attr('y', 192)
+                .attr('height', 15)
+                .attr('width', 15)
+
+            d3.select('#button-0-'+typeProp)
+                .on('click', function(){
+                    startData = startData + 6;
+                    if(startData > 50) startData = 0;
+                    console.log('hit', startData)
+                    trimmedData = data.slice(data.length-startData-7, data.length-startData) 
+                    console.log(trimmedData)
+                    var changeCircles = d3.select("#" + scope.lineId).transition()
+
+                    const newXScale = d3.scale.linear().domain(d3.extent(data, (d) => d[scope.xProp])) // scaling x-axis, so values al fit on line and are relative
+                        .range([300, 1000])
+
+                    circles
+                        .data(trimmedData)
+                        .transition()
+                        .attr('cx', (d,i) => {
+                    if(i>0)if(newXScale(d.salary) - newXScale(trimmedData[i-1].salary) < 50) {
+                        console.log(newXScale(d.salary))
+                        return (newXScale(d.salary)+(50*i))
+                    }
+                    console.log(newXScale(d.salary))
+                    return newXScale(d.salary)})                
+                })
+            
+        d3.select('#button-1-'+typeProp)
+                .on('click', function(){
+                    startData = startData - 6;
+                    if(startData <0) startData = 0;
+                    console.log('hit', startData)
+                    trimmedData = data.slice(data.length-startData-7, data.length-startData) 
+                    console.log(trimmedData)
+                    var changeCircles = d3.select("#" + scope.lineId).transition()
+
+                    const newXScale = d3.scale.linear().domain(d3.extent(data, (d) => d[scope.xProp])) // scaling x-axis, so values al fit on line and are relative
+                        .range([300, 1000])
+
+                    circles
+                        .data(trimmedData)
+                        .transition()
+                        .attr('cx', (d,i) => {
+                    if(i>0)if(newXScale(d.salary) - newXScale(trimmedData[i-1].salary) < 50) {
+                        console.log(newXScale(d.salary))
+                        return (newXScale(d.salary)+(50*i))
+                    }
+                    console.log(newXScale(d.salary))
+                    return newXScale(d.salary)})                
+                })
 
         }
 
@@ -89,7 +154,7 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                  data = data.sort((a,b)=> b.salary - a.salary);
                  data = data.slice(0,6)
             const xScale = d3.scale.linear().domain(d3.extent(data, (d) => d[scope.xProp])) // scaling x-axis, so values al fit on line and are relative
-                .range([300, 1100]);
+                .range([300, 1000]);
 
             const rScale = d3.scale.linear().domain([1,5]) // scaling radius size
                 .range([rMin, rMax]);
@@ -167,6 +232,7 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                                 .remove()
 
                             d3.selectAll('.d3-tip').remove()
+                            d3.selectAll('rect').remove()
                         
                             circle.remove()
                                 .transition()
@@ -174,7 +240,7 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                                 .attr('r',0)
                                 .remove()
                             circles.remove()
-                            render(scope.lineData, scope.lineId)
+                            render(scope.lineData, scope.lineId, startData)
                         })
 
              
