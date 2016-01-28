@@ -33,7 +33,6 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
             data = data.filter((obj)=>obj.jobTitle!== 'Intern')
             var trimmedData = data.slice(data.length-start-7, data.length-start);
 
-            // console.log(data)
             const lineToAppendTo = d3.select("#" + scope.lineId);
             const tip = d3.tip()
                 .attr('class', 'd3-tip')
@@ -67,7 +66,6 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                 .attr("r",  (d) => rScale(d[rProperty]))
                 .attr("cx", (d,i) => {
                     if(i>0)if(xScale(d.salary) - xScale(trimmedData[i-1].salary) < 50) return (xScale(d.salary)+(50*i))
-                    console.log(xScale(d.salary))
                     return xScale(d.salary)})
                 
 
@@ -86,26 +84,37 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                     })});
             
 
-            var buttondata = ['forward', 'back']
-            lineToAppendTo.selectAll('button-circles')
+            var buttondata = [ 'back', 'forward']
+            lineToAppendTo.selectAll('button-rect')
                 .data(buttondata)
                 .enter()
                 .append('rect')
                 .attr('id', (d,i)=>'button-'+i + '-'+ typeProp)
-                .style('fill', 'darkgrey')
+                .attr('fill', 'darkgrey')
                 .attr('x', (d,i)=> {if(i===1)return 1000
                                     return 200})
                 .attr('y', 192)
                 .attr('height', 15)
                 .attr('width', 15)
+            lineToAppendTo.selectAll('button-rect')
+                .data(buttondata)
+                .enter()
+                .append('text')
+                    .attr('x', (d,i)=> {if(i===1)return 970
+                                        return 185})
+                    .attr('y', 185)
+                    .text(d=>d)
+                    .attr("font-family", "sans-serif")
+                    .attr('font-size', '20px')
+                    .attr('fill', 'black')
+
+
 
             d3.select('#button-0-'+typeProp)
                 .on('click', function(){
                     startData = startData + 6;
                     if(startData > 50) startData = startData - 6;
-                    console.log('hit', startData)
                     trimmedData = data.slice(data.length-startData-7, data.length-startData) 
-                    console.log(trimmedData)
                     var changeCircles = d3.select("#" + scope.lineId).transition()
 
                     const newXScale = d3.scale.linear().domain(d3.extent(data, (d) => d[scope.xProp])) // scaling x-axis, so values al fit on line and are relative
@@ -115,34 +124,28 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                         .data(trimmedData)
                         .transition()
                         .attr('cx', (d,i) => {
-                            console.log(d.salary)
                     if(newXScale(d.salary)> 600){
                         if(i<trimmedData.length&& i!==0)if(newXScale(d.salary) - newXScale(trimmedData[i-1].salary) < 50) {
-                        console.log('first',newXScale(d.salary))
                         return (newXScale(d.salary)-(50*(trimmedData.length-i)))
                         }
                     }
                     if(i>0)if(newXScale(d.salary) - newXScale(trimmedData[i-1].salary) < 50) {
-                        console.log(newXScale(d.salary))
                         return (newXScale(d.salary)+(50*i))
                     }
-                    console.log(newXScale(d.salary))
                     return newXScale(d.salary)})                
                 })
             
         d3.select('#button-1-'+typeProp)
                 .on('click', function(){
+
                     startData = startData - 6;
                     if(startData <0) startData = 0;
-                    console.log('hit', startData)
                     trimmedData = data.slice(data.length-startData-7, data.length-startData) 
-                    console.log(trimmedData)
                     var changeCircles = d3.select("#" + scope.lineId).transition()
 
                     const newXScale = d3.scale.linear().domain(d3.extent(trimmedData, (d) => d[scope.xProp])) // scaling x-axis, so values al fit on line and are relative
                         .range([300, 900])
 
-                    console.log()
 
                     circles
                         .data(trimmedData)
@@ -150,15 +153,12 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                         .attr('cx', (d,i) => {
                         if(newXScale(d.salary)> 600){
                             if(i>0)if(newXScale(d.salary) - newXScale(trimmedData[i-1].salary) < 50) {
-                            console.log('first',newXScale(d.salary))
                             return (newXScale(d.salary)+(50*(trimmedData.length-i)))
                             }
                         }
                         if(i>0)if(newXScale(d.salary) - newXScale(trimmedData[i-1].salary) < 50) {
-                            console.log(newXScale(d.salary))
                             return (newXScale(d.salary)+(50*i))
                         }
-                        console.log(newXScale(d.salary))
                         return newXScale(d.salary)})                
                 })
 
@@ -209,7 +209,6 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
             lineToAppendTo.call(smallTip); 
 
                     var tempXScale = d3.scale.linear().domain(d3.extent(data, (d)=>d.salary)).range([300,900])
-                        console.log('hit' + typeProp)
                         fakeCirclesLine
                             .data(data)
                             .enter()

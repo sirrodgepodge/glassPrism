@@ -38,3 +38,13 @@
 circle:hover{
     fill: lightblue;
 }
+
+rect{
+    fill: darkgrey;
+    transition: fill .2s;
+}
+
+rect:hover{
+    fill: darkred;
+ 
+}
