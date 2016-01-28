@@ -30,6 +30,7 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
             dirty = true;
             //bad form must fix
             data = glassData.filterByProp(typeProp, data);
+            data = data.filter((obj)=>obj.jobTitle!== 'Intern')
             var trimmedData = data.slice(data.length-start-7, data.length-start);
 
             // console.log(data)
@@ -114,6 +115,13 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                         .data(trimmedData)
                         .transition()
                         .attr('cx', (d,i) => {
+                            console.log(d.salary)
+                    if(newXScale(d.salary)> 600){
+                        if(i<trimmedData.length&& i!==0)if(newXScale(d.salary) - newXScale(trimmedData[i-1].salary) < 50) {
+                        console.log('first',newXScale(d.salary))
+                        return (newXScale(d.salary)-(50*(trimmedData.length-i)))
+                        }
+                    }
                     if(i>0)if(newXScale(d.salary) - newXScale(trimmedData[i-1].salary) < 50) {
                         console.log(newXScale(d.salary))
                         return (newXScale(d.salary)+(50*i))
@@ -140,12 +148,18 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                         .data(trimmedData)
                         .transition()
                         .attr('cx', (d,i) => {
-                    if(i>0)if(newXScale(d.salary) - newXScale(trimmedData[i-1].salary) < 50) {
+                        if(newXScale(d.salary)> 600){
+                            if(i>0)if(newXScale(d.salary) - newXScale(trimmedData[i-1].salary) < 50) {
+                            console.log('first',newXScale(d.salary))
+                            return (newXScale(d.salary)+(50*(trimmedData.length-i)))
+                            }
+                        }
+                        if(i>0)if(newXScale(d.salary) - newXScale(trimmedData[i-1].salary) < 50) {
+                            console.log(newXScale(d.salary))
+                            return (newXScale(d.salary)+(50*i))
+                        }
                         console.log(newXScale(d.salary))
-                        return (newXScale(d.salary)+(50*i))
-                    }
-                    console.log(newXScale(d.salary))
-                    return newXScale(d.salary)})                
+                        return newXScale(d.salary)})                
                 })
 
         }
