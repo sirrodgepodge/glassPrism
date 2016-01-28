@@ -74,7 +74,7 @@ app.directive('dataline', function($timeout,$window, $interval, $rootScope, glas
                 .on('mouseover', tip.show)
                 .on('mouseout', tip.hide)
                 .on('click', (d,i) =>{
-                    console.log('this' +typeProp)
+                    circles.on('click', null)
                     $rootScope.directiveCheck = typeProp
                     focusCircle = focusCircle.slice(focusCircle.length)
                     focusCircle = focusCircle.concat('circle-',i,'-',typeProp)
