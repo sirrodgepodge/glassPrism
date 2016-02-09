@@ -11,7 +11,7 @@ module.exports = function(app) {
     }
 
     // Set root directory path
-    app.setValue('root', path.join(__dirname, '../../'));
+    app.setValue('root', path.resolve('./'));
 
     // Set favicon path
     app.setValue('faviconPath', path.join(app.getValue('root'), './server/app/views/favicon.ico'));
