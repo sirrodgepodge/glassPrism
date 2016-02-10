@@ -8,7 +8,7 @@ var gulp = require('gulp'),
 
 
 gulp.task('buildCSS', function() {
-    return gulp.src('./browser/universal.scss')
+    return gulp.src('./browser/app.scss')
         .pipe(sourcemaps.init())
         .pipe(globbing({
             // Configure it to use SCSS files
