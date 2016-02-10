@@ -5,22 +5,42 @@ var router = require('express').Router(),
 
 
 router.get('/', function(req,res,next){
-    Job.find().then(function(jobs){
-        console.log(jobs[0])
-        res.json(jobs)
-    })
-})
+    Job.find().limit(500).then(function(jobs){
+        console.log(jobs[0]);
+        res.json(jobs);
+    });
+});
 
 router.post('/', function(req, res, next) {
-    console.log(req.body.industry)
-    Job.find({industry:req.body.industry[0]}).then(function(comments) {
-        // console.log(comments);
-        res.json(comments);
-    })
-    // .catch(function(err){
-    //     console.log(err);
-    //     res.json(err);
-    // });
+    //  req.body should be formatted like so:
+    //  {
+    //    industry: [selected industry strings],
+    //    company: [selected company strings],
+    //    jotTitle: [selected jobTitle strings]
+    //  }
+    //
+    //  if the industry, company, or jobTitle array is empty or the property does not exist on the object
+    //  then there will be no filter applied to query based on this property
+    //
+
+    const queryObj = {};
+    if(req.body.industry && req.body.industry.length) queryObj.industry = {
+      $in: req.body.industry
+    };
+    if(req.body.company && req.body.company.length) queryObj.name = {
+      $in: req.body.company
+    };
+    if(req.body.jobTitle && req.body.jobTitle.length) queryObj.salaries = {
+      $elemMatch: {
+        title: {
+          $in: req.body.jobTitle
+        }
+      }
+    };
+
+    Job.find(queryObj).limit(500)  // capping returned objects at 500 for performance
+      .then((matchedCompanies) => res.json(matchedCompanies))
+      .catch(err => console.log(err));
 });
 
 module.exports = router;
